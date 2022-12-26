@@ -5,6 +5,8 @@ import Image from "@tiptap/extension-image";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import styled from "styled-components";
+import { useDispatch, useSelector } from 'react-redux';
+import {setWholeState} from '../reducers/blogSlice';
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -119,8 +121,9 @@ const MenuBar = ({ editor }) => {
 };
 
 export default () => {
-  const [content, setContent] = useState();
-
+  const [content,setContent] = useState("");
+  const dispatch = useDispatch();
+  
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -133,44 +136,18 @@ export default () => {
       }),
       Highlight,
     ],
-    content: `
-    <h3 style="text-align:center">
-    Devs Just Want to Have Fun by Cyndi Lauper
-    </h3>
-    <p style="text-align:center">
-    I come home in the morning light<br>
-    My mother says, <mark>“When you gonna live your life right?”</mark><br>
-    Oh mother dear we’re not the fortunate ones<br>
-    And devs, they wanna have fun<br>
-    Oh devs just want to have fun</p>
-    <p style="text-align:center">
-    The phone rings in the middle of the night<br>
-    My father yells, "What you gonna do with your life?"<br>
-    Oh daddy dear, you know you’re still number one<br>
-    But <s>girls</s>devs, they wanna have fun<br>
-    Oh devs just want to have
-    </p>
-    <p style="text-align:center">
-    That’s all they really want<br>
-    Some fun<br>
-    When the working day is done<br>
-    Oh devs, they wanna have fun<br>
-    Oh devs just wanna have fun<br>
-    (devs, they wanna, wanna have fun, devs wanna have)
-    
-    </p>
-    `,
+    content: content,
     onUpdate({ editor }) {
-      setContent(editor.getHTML());
+      setContent(editor.getHTML())
+      console.log(content)
     },
 });
 
-  const [blog, setBlog] = useState({
+  const blog = {
     title: "",
-    content: content,
     description: "",
-    tags: [],
-  });
+    tags: null,
+  }
 
   const titleRef = useRef();
   const descRef = useRef();
@@ -178,15 +155,16 @@ export default () => {
 
   const handleBlogPost = () => {
     const title = titleRef.current.value;
-    const desc = descRef.current.value;
-    const tags = [tagsRef.current.value.split(" ")];
-    const blog = { title, content, desc, tags };
-    setBlog(blog);
+    const description = descRef.current.value;
+    const tags = [...tagsRef.current.value.split(" ")];
+    const blog = { title, content, description, tags };
+    // console.log(blog)
+    dispatch(setWholeState(blog));
   };
 
-  useEffect(() => {
-    console.log(blog);
-  }, [blog]);
+  // useEffect(() => {
+  //   console.log(blog);
+  // }, [blog]);
 
   return (
     <Container>
@@ -217,6 +195,7 @@ export default () => {
 };
 
 const Container = styled.div`
+
   width: 100%;
   display: flex;
   justify-content: center;

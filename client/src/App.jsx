@@ -12,9 +12,6 @@ function escapeDoubleQuotes(string) {
 */
 
 function App() {
-  
-  const [content, setContent] = useState('');
-  const [data, setData] = useState();
 
   // useEffect(() =>{
   //   const fetchData = async () => {
@@ -25,7 +22,6 @@ function App() {
   //   }
   //   fetchData();
   // },[content])
-
 
   return (
     <div className="App">
