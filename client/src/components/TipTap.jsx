@@ -7,6 +7,8 @@ import StarterKit from "@tiptap/starter-kit";
 import styled from "styled-components";
 import { useDispatch, useSelector } from 'react-redux';
 import {setWholeState} from '../reducers/blogSlice';
+import Spinner from './Spinner';
+import axios from 'axios';
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -121,8 +123,16 @@ const MenuBar = ({ editor }) => {
 };
 
 export default () => {
-  const [content,setContent] = useState("");
+  let [blog, setBlog] = useState({});
+  const [loading, setLoading] = useState(false);
+  const tempContent = useSelector(state => state.content)
+  const state = useSelector(state => state)
+  const [content,setContent] = useState(tempContent);
   const dispatch = useDispatch();
+
+  const titleRef = useRef();
+  const descRef = useRef();
+  const tagsRef = useRef();
   
   const editor = useEditor({
     extensions: [
@@ -136,61 +146,76 @@ export default () => {
       }),
       Highlight,
     ],
-    content: content,
+    content: '' || content,
     onUpdate({ editor }) {
       setContent(editor.getHTML())
-      console.log(content)
     },
 });
 
-  const blog = {
-    title: "",
-    description: "",
-    tags: null,
-  }
+const escapeDoubleQuotes = (string) => {
+  return string.replace(/"/g, '\\"');
+}
 
-  const titleRef = useRef();
-  const descRef = useRef();
-  const tagsRef = useRef();
+  console.log(content)
 
   const handleBlogPost = () => {
-    const title = titleRef.current.value;
-    const description = descRef.current.value;
-    const tags = [...tagsRef.current.value.split(" ")];
+    setLoading(true);
+     const title = titleRef.current.value;
+     const description = descRef.current.value;
+     const tags = [...tagsRef.current.value.split(" ")];
     const blog = { title, content, description, tags };
-    // console.log(blog)
+    setBlog(blog);
     dispatch(setWholeState(blog));
   };
 
-  // useEffect(() => {
-  //   console.log(blog);
-  // }, [blog]);
+  useEffect(() => {
+    let tContent = escapeDoubleQuotes(`${content}`);
+    console.log(blog)
+    axios({
+      method: 'post',
+      url: 'http://localhost:8000/api/blog/posts',
+      data: blog,
+    })
+    .then(function (response) {
+      console.log("posted",response);
+      setLoading(false);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  },[state]);
 
+  // check if content exists in database
+  
   return (
-    <Container>
-      <div className="editor">
-        <MenuBar editor={editor} />
-        <input placeholder="title..." className="title-inp" ref={titleRef} />
-        <EditorContent editor={editor} />
-        <textarea
-          rows="10"
-          placeholder="enter blog description here..."
-          ref={descRef}
-        ></textarea>
-        <input
-          placeholder="tags [technology - education - coding - lifestyle]"
-          className="editor-tags"
-          ref={tagsRef}
-        />
-
-        <div className="cal-sub">
-          <button className="blog-cancel">Cancel</button>
-          <button className="blog-submit" onClick={handleBlogPost}>
-            Submit
-          </button>
-        </div>
-      </div>
-    </Container>
+    <>
+    {loading ? <Spinner /> : (
+       <Container>
+       <div className="editor">
+         <MenuBar editor={editor} />
+         <input placeholder="title..." className="title-inp" ref={titleRef} />
+         <EditorContent editor={editor} />
+         <textarea
+           rows="10"
+           placeholder="enter blog description here..."
+           ref={descRef}
+           ></textarea>
+         <input
+           placeholder="tags [technology - education - coding - lifestyle]"
+           className="editor-tags"
+           ref={tagsRef}
+           />
+ 
+         <div className="cal-sub">
+           <button className="blog-cancel">Cancel</button>
+           <button className="blog-submit" onClick={handleBlogPost}>
+             Submit
+           </button>
+         </div>
+       </div>
+     </Container>
+    )}
+          </>
   );
 };
 
@@ -199,11 +224,11 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center;;
 
   .editor {
     position: relative;
-    top: 6rem;
+    top: 2.5rem;
     width: 82%;
   }
 
@@ -215,6 +240,7 @@ const Container = styled.div`
 
   /* Basic editor styles */
   .ProseMirror {
+    min-height: 50vh;
     border: 2px solid black;
     border-radius: 10px;
     position: relative;
@@ -302,24 +328,27 @@ const Container = styled.div`
 
   .title-inp {
     width: 100%;
-    height: 1.5rem;
+    height: 2rem;
     &:focus {
       outline: none;
     }
     padding: 0.2rem 0.5rem;
     border: 1.5px dashed #f40f0f;
     border-radius: 0.2rem;
+    font-size: 1rem;
   }
 
   .editor-tags {
     width: 100%;
-    height: 1.5rem;
+    height: 2rem;
     &:focus {
       outline: none;
     }
     padding: 0.2rem 0.5rem;
     border: 1px solid #36e38f;
     border-radius: 0.2rem;
+    font-size: 1rem;
+
   }
 
   textarea {
@@ -332,6 +361,8 @@ const Container = styled.div`
       outline: none;
     }
     border-radius: 0.5rem;
+    font-size: 1rem;
+
   }
 
   button {
