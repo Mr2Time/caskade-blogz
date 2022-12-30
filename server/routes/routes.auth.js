@@ -8,34 +8,19 @@ export const userAuth = async (req, res) => {
     const { error } = loginUserVal(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    // checks if user sent email/username & checks password, sends over info
-    const user = await User.findOne({ email: req.body.email});
+    const { email, password } = req.body;
 
-    if (!user)
-      return res.send({
-        status: 401,
-        message: "Invalid credentials.",
-      });
-    const validatePassword = bcrypt.compareSync(
-      req.body.password,
-      user.password
-    );
+    const user = await User.findOne({email});
+    if(!user) return res.status(401).send({message: "Invalid email or password."});
 
-    if (!validatePassword)
-      return res.send({
-        status: 401,
-        message: "Invalid credentials.",
-      });
+    const validPass = await compareSync(password, user.password);
 
-      res.json({
-        status: 200,
-        message: "login success",
-        user: user,
-      });
-  } catch (er) {
-    res.send({
-      status: 400,
-      message: `Error ${er}`,
-    });
+    if(!validPass) return res.status(401).send({message: "Invalid email or password."});
+
+    const token = user.generateAuthToken();
+    res.status(200).send({data: token, message: "Logged in sucessfully."})
+  }
+  catch (error) {
+    res.status(500).send({ message: error.message });
   }
 };

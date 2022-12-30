@@ -96,13 +96,13 @@ const MenuBar = ({ editor }) => {
         Right
       </button>
       <button
-        onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-        className={editor.isActive({ textAlign: "justify" }) ? "is-active" : ""}
+        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        className={editor.isActive('blockquote') ? 'is-active' : ''}
       >
-        Justify
+        blockquote
       </button>
       <button onClick={() => editor.chain().focus().unsetAllMarks().run()}>
-        Clear-marks
+        clear marks
       </button>
       <button onClick={addImage}>Image(URL)</button>
 
@@ -228,8 +228,8 @@ const Container = styled.div`
 
   .editor {
     position: relative;
-    top: 2.5rem;
-    width: 82%;
+    top: 0.5rem;
+    width: 85%;
   }
 
   .menu-bar {

@@ -16,8 +16,8 @@ export const signupUserVal = (user) => {
 //validation for login
 export const loginUserVal = (user) => {
     const schema = Joi.object({
-      email: Joi.string().email(),
-      password: Joi.string().alphanum().min(5).max(250).required(),
+      email: Joi.string().email().label('Email'),
+      password: Joi.string().alphanum().min(5).max(250).required().label('Password'),
     });
     return schema.validate(user);
 };

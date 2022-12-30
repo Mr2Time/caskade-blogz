@@ -26,8 +26,8 @@ app.get("/", (req, res) => {
 });
 
 // routes here
-app.use("/api/user/signup", userSignup);
-app.use("/api/user/login", userAuth);
+app.use("/api/users/register", userSignup);
+app.use("/api/users/auth", userAuth);
 app.use("/api/blog/posts", blogRouter);
 
 // connecting to db

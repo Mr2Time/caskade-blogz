@@ -1,32 +1,37 @@
 import React,{useState, useEffect} from 'react'
 import axios from 'axios';
+import { Routes, Route, useLocation } from "react-router-dom";
+
 import TipTap from './components/TipTap';
+import Nav from './components/Navbar'
+import Home from './pages/Home';
+import MyBlogs from './pages/MyBlogs';
+import Blogs from './pages/Blogs';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+
 import GlobalStyle from './components/GlobalStyles';
 
-/*
-for replacing json
-function escapeDoubleQuotes(string) {
-  return string.replace(/"/g, '\\"');
-}
-
-*/
 
 function App() {
+  const {pathname, key} = useLocation();
 
-  // useEffect(() =>{
-  //   const fetchData = async () => {
-  //     const result = await axios.get('http://localhost:8000/api/blog/posts');
-  //     console.log(result.data)
-  //     setData(result.data);
-  //     console.log(result.data);
-  //   }
-  //   fetchData();
-  // },[content])
 
   return (
     <div className="App">
       <GlobalStyle />
-      <TipTap className='editor'/>
+      <Nav />
+      <Routes location={pathname} key={key}>
+          <Route path="/">
+            <Route index element={<Home />} />
+            <Route path="blogs" element={<Blogs />} />
+            <Route path="my-blogs" element={<MyBlogs />} />
+            <Route path="editor" element={<TipTap />} />
+            <Route path="login" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
+          </Route>
+          <Route path="*" element={<Home />} />
+        </Routes>
     </div>
   );
 }

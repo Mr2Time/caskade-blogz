@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
     * {
@@ -12,14 +12,20 @@ const GlobalStyle = createGlobalStyle`
         font-family: "JetBrainsMono", monospace;
     }
 
- .loader {
-  border: 10px solid #f3f3f3;
-  border-top: 10px solid #3498db;
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  animation: spin 1s linear infinite;
-}
+    .loader-container {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+    
+      .loader {
+        border: 10px solid #f3f3f3;
+        border-top: 10px solid #3498db;
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        animation: spin 1s linear infinite;
+      }
+    }
 
 @keyframes spin {
   0% {
