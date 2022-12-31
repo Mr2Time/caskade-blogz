@@ -19,7 +19,6 @@ export default function Create() {
 }
 
 const CreateContainer = styled.button`
-    position: relative;
   .circles {
     display: flex;
     justify-content: center;
@@ -27,12 +26,12 @@ const CreateContainer = styled.button`
     position: absolute;
     height: 17vmin;
     width: 17vmin;
-    top: 70vh;
-    left: 82vw;
+    top: 80%;
+    left: 88%;
 
     .create-btn {
-        width: 4rem;
-        height: 4rem;
+        width: 5rem;
+        height: 5rem;
         border-radius: 50%;
         background-color: #59f1b9;
         color: #fff;

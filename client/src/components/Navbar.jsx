@@ -1,12 +1,19 @@
 import React from "react";
 import styled from "styled-components";
-import logo from "../assets/logo.png";
 import { motion } from "framer-motion";
 import { fade } from "../animations";
-
 import { Link } from "react-router-dom";
+import { setAuth, userData } from "../reducers/userSlice";
 
-const Navbar = () => {
+import logo from "../assets/logo.png";
+
+const handleLogout = (dispatch) => {
+  localStorage.removeItem("token");
+  dispatch(setAuth(false));
+  dispatch(userData({}));
+}
+
+const Navbar = ({Auth, dispatch}) => {
   return (
     <Nav>
       <Link to="/" className="logo-container">
@@ -32,12 +39,18 @@ const Navbar = () => {
       </ul>
       <div className="login-signup-btns">
 
-      <Link to="/login" className="login-btn">
+      {Auth ? (
+        <button className='signup-btn' onClick={() => handleLogout(dispatch)}>Logout</button>
+      ) : (
+        <>
+        <Link to="/login" className="login-btn">
         Login
       </Link>
       <Link to="/signup" className="signup-btn">
         Signup
       </Link>
+        </>
+      )}
       </div>
     </Nav>
   );

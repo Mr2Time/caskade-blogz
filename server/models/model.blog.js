@@ -35,7 +35,6 @@ const blogSchema = new Schema({
 }, {
   timestamps: true,
   unique: ['userId', 'title']
-
 });
 
 const Blog = mongoose.model("Blog", blogSchema);

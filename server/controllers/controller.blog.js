@@ -8,7 +8,9 @@ export const postBlog = async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     // checks if user sent email/username & checks password, sends over info
+    console.log(req.body)
     const user = await User.findOne({ _id: req.body.userId });
+    console.log("USER: ",user)
 
     if (!user)
       return res.send({

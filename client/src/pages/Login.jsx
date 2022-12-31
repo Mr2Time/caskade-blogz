@@ -3,12 +3,16 @@ import axios from 'axios'
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
+import {useSelector, useDispatch} from 'react-redux';
+import {userData, setAuth} from '../reducers/userSlice';
 import Spinner from "../components/Spinner";
 
 import registernew from "../assets/register-new.png";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [error, setError] = useState({
     status: 0,
     message: '',
@@ -25,13 +29,16 @@ export default function Login() {
     setLoading(true);
     const { email, password } = values;
     try {
-      const { data } = await axios.post(uri, {
+      const {data:{user}, data } = await axios.post(uri, {
         email,
         password,
       });
       console.log(data)
-      localStorage.setItem("token", data.data);
-      // window.location = "/";
+      console.log("User: ",user)
+      localStorage.setItem('token', data.data);
+      dispatch(userData(user));
+      dispatch(setAuth(true));
+      navigate('/my-blogs');
       setLoading(false);
     } catch (error) {
       const {status, data: {message} } = error.response;

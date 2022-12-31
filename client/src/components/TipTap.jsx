@@ -125,7 +125,7 @@ const MenuBar = ({ editor }) => {
 export default () => {
   let [blog, setBlog] = useState({});
   const [loading, setLoading] = useState(false);
-  const tempContent = useSelector(state => state.content)
+  const tempContent = useSelector(state => state.blog.content)
   const state = useSelector(state => state)
   const [content,setContent] = useState(tempContent);
   const dispatch = useDispatch();
@@ -156,14 +156,14 @@ const escapeDoubleQuotes = (string) => {
   return string.replace(/"/g, '\\"');
 }
 
-  console.log(content)
+  const id = localStorage.getItem("user");
 
   const handleBlogPost = () => {
     setLoading(true);
      const title = titleRef.current.value;
      const description = descRef.current.value;
      const tags = [...tagsRef.current.value.split(" ")];
-    const blog = { title, content, description, tags };
+    const blog = { title, content, description, tags, userId: JSON.parse(id) };
     setBlog(blog);
     dispatch(setWholeState(blog));
   };
@@ -224,7 +224,7 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;;
+  align-items: center;
 
   .editor {
     position: relative;
@@ -246,6 +246,7 @@ const Container = styled.div`
     position: relative;
     z-index: 1;
     margin-top: 1rem;
+    padding: 1rem;
 
     > * + * {
       margin-top: 0.75em;

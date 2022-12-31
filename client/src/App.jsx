@@ -1,4 +1,5 @@
 import React,{useState, useEffect} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 import axios from 'axios';
 import { Routes, Route, useLocation } from "react-router-dom";
 
@@ -16,11 +17,13 @@ import GlobalStyle from './components/GlobalStyles';
 function App() {
   const {pathname, key} = useLocation();
 
+  const Auth = useSelector((state) => state.user.auth);
+  const dispatch = useDispatch();
 
   return (
     <div className="App">
       <GlobalStyle />
-      <Nav />
+      <Nav Auth={Auth} dispatch={dispatch}/>
       <Routes location={pathname} key={key}>
           <Route path="/">
             <Route index element={<Home />} />
