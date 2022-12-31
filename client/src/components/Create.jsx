@@ -18,16 +18,16 @@ export default function Create() {
   );
 }
 
-const CreateContainer = styled.button`
+const CreateContainer = styled.div`
   .circles {
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
-    height: 17vmin;
-    width: 17vmin;
-    top: 80%;
-    left: 88%;
+    height: 25vmin;
+    width: 25vmin;
+    top: 75%;
+    left: 87%;
 
     .create-btn {
         width: 5rem;
@@ -45,7 +45,7 @@ const CreateContainer = styled.button`
         }
     }
 
-    div {
+    .circle1, .circle2, .circle3 {
       animation: growAndFade 3s infinite ease-out;
       background-color: lightgreen;
       border-radius: 50%;

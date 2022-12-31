@@ -21,7 +21,7 @@ function App() {
   const dispatch = useDispatch();
 
   return (
-    <div className="App">
+    <>
       <GlobalStyle />
       <Nav Auth={Auth} dispatch={dispatch}/>
       <Routes location={pathname} key={key}>
@@ -35,7 +35,7 @@ function App() {
           </Route>
           <Route path="*" element={<Home />} />
         </Routes>
-    </div>
+    </>
   );
 }
 

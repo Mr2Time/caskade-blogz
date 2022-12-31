@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import axios from 'axios'
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
-import {useSelector, useDispatch} from 'react-redux';
+import {useFormik } from "formik";
+import {useDispatch} from 'react-redux';
 import {userData, setAuth} from '../reducers/userSlice';
 import Spinner from "../components/Spinner";
 
@@ -83,7 +83,7 @@ export default function Login() {
           <div>
             Don't have an account? <Link to="/signup">Signup</Link>
           </div>
-          {error.message && <div className={`form-control ${error.status == 200 ? 'smsg' : ''}`} style={{margin: '2rem 0', fontFamily: 'Arial' }}>{error.message}</div>}
+          {error.message && <div className={`form-control ${error.status === 200 ? 'smsg' : ''}`} style={{margin: '2rem 0', fontFamily: 'Arial' }}>{error.message}</div>}
 
         </form>
       </FormContainer>
@@ -157,7 +157,7 @@ const Container = styled.div`
   align-items: center;
   background: linear-gradient(
     to right top,
-    rgba(73, 89, 199, 0.9),
-    rgba(185, 90, 186, 0.7)
+    rgb(40, 49, 59, 0.9),   rgb(72, 84, 97, 0.7)
+
   );
 `;

@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import axios from 'axios'
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
+import { useFormik } from "formik";
 import Spinner from "../components/Spinner";
 
 import registernew from "../assets/register-new.png";
@@ -34,7 +34,7 @@ export default function Signup() {
       setError({status: 200, message: 'Successfully registered, redirecting to login page...'});
       setTimeout(() => {
         navigate('/login');
-      }, 3000);
+      }, 2500);
       setLoading(false);
     } catch (error) {
       const {status, data: {message} } = error.response;
@@ -115,7 +115,7 @@ export default function Signup() {
           <div>
             Already have an account? <Link to="/login">Login</Link>
           </div>
-          {error.message && <div className={`form-control ${error.status == 200 ? 'smsg' : ''}`} style={{margin: '2rem 0', fontFamily: 'Arial' }}>{error.message}</div>}
+          {error.message && <div className={`form-control ${error.status === 200 ? 'smsg' : ''}`} style={{margin: '2rem 0', fontFamily: 'Arial' }}>{error.message}</div>}
         </form>
       </FormContainer>
     </Container>
@@ -188,7 +188,7 @@ const Container = styled.div`
   align-items: center;
   background: linear-gradient(
     to right top,
-    rgba(73, 89, 199, 0.9),
-    rgba(185, 90, 186, 0.7)
+    rgb(40, 49, 59, 0.9),   rgb(72, 84, 97, 0.7)
+
   );
 `;

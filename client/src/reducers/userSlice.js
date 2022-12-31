@@ -4,7 +4,7 @@ const initialState = {
     id: "",
     email: "",
     blogs: [],
-    auth: false,
+    auth: localStorage.getItem("token") ? true : false,
 };
 
 const userSlice = createSlice({

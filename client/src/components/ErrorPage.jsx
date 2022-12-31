@@ -1,0 +1,42 @@
+import styled from "styled-components";
+import  {Link}  from "react-router-dom";
+
+const ErrorPage = () => {
+    return (
+      <NoAuth>
+        <h1 className='error-code'>401 - Unathorized</h1>
+        <h1>Please sign-in to view this page.</h1>
+          <Link to="/login" className='sign-in-btn'>Sign-In</Link>
+      </NoAuth>
+    );
+};
+
+export default ErrorPage;
+
+const NoAuth = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 93vh;
+  width: 100vw;
+  background: linear-gradient(
+    to right top,
+    rgb(40, 49, 59, 0.9),   rgb(72, 84, 97, 0.7)
+
+  );
+  color: #fff;
+  font-family: 'Courier New', monospace;
+
+  .sign-in-btn {
+    margin-top: 2rem;
+    padding: 0.5rem 0.5rem;
+    text-decoration: none;
+    border-bottom: 2px solid #23d997;
+    color: #fff;
+    transition: all 0.3s ease-in-out;
+    &:hover {
+        transform: translateY(-3px);
+    }
+  }
+`;

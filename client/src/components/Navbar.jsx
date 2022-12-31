@@ -57,9 +57,10 @@ const Navbar = ({Auth, dispatch}) => {
 };
 
 const Nav = styled.nav`
-  background: #282828;
-  height: 7vh;
-  min-width: 100vw;
+  background: linear-gradient(
+    to right bottom,
+    rgb(40, 49, 59, 0.9),   rgb(72, 84, 97, 0.7)
+  );  height: 7vh;
   display: flex;
   justify-content: space-around;
   align-items: center;
