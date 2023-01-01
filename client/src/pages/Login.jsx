@@ -36,6 +36,7 @@ export default function Login() {
       console.log(data)
       console.log("User: ",user)
       localStorage.setItem('token', data.data);
+      localStorage.setItem('user', JSON.stringify(user.id));
       dispatch(userData(user));
       dispatch(setAuth(true));
       navigate('/my-blogs');

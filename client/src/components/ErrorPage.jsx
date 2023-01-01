@@ -5,7 +5,7 @@ const ErrorPage = () => {
     return (
       <NoAuth>
         <h1 className='error-code'>401 - Unathorized</h1>
-        <h1>Please sign-in to view this page.</h1>
+        <h1>please sign-in/sign-up to view this page.</h1>
           <Link to="/login" className='sign-in-btn'>Sign-In</Link>
       </NoAuth>
     );

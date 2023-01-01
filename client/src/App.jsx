@@ -17,13 +17,13 @@ import GlobalStyle from './components/GlobalStyles';
 function App() {
   const {pathname, key} = useLocation();
 
-  const Auth = useSelector((state) => state.user.auth);
+  const User = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   return (
     <>
       <GlobalStyle />
-      <Nav Auth={Auth} dispatch={dispatch}/>
+      <Nav Auth={User.auth} dispatch={dispatch} Email={User.email}/>
       <Routes location={pathname} key={key}>
           <Route path="/">
             <Route index element={<Home />} />

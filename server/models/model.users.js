@@ -20,9 +20,10 @@ const userSchema = new Schema({
     maxlength: 250,
   },
   blogs: {
-    type: Array,
-    
-  }
+    type: [],
+    required: true,
+  },
+
 });
 
 userSchema.methods.generateAuthToken = function () {

@@ -30,7 +30,7 @@ const blogSchema = new Schema({
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
+    ref: "User",
   }
 }, {
   timestamps: true,

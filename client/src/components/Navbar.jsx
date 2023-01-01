@@ -9,11 +9,17 @@ import logo from "../assets/logo.png";
 
 const handleLogout = (dispatch) => {
   localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("data");
   dispatch(setAuth(false));
   dispatch(userData({}));
 }
 
-const Navbar = ({Auth, dispatch}) => {
+const Navbar = ({Auth, dispatch, Email}) => {
+
+  let email = Auth ? Email.split('@')[0] : '';
+  email = email.charAt(0).toUpperCase() + email.slice(1);
+
   return (
     <Nav>
       <Link to="/" className="logo-container">
@@ -37,12 +43,15 @@ const Navbar = ({Auth, dispatch}) => {
           </Link>
         </li>
       </ul>
+      <div className='right-side'>
+      <div className='email'>
+        {Auth && <p>{email}</p>}
+      </div>
       <div className="login-signup-btns">
-
       {Auth ? (
         <button className='signup-btn' onClick={() => handleLogout(dispatch)}>Logout</button>
-      ) : (
-        <>
+        ) : (
+          <>
         <Link to="/login" className="login-btn">
         Login
       </Link>
@@ -51,6 +60,7 @@ const Navbar = ({Auth, dispatch}) => {
       </Link>
         </>
       )}
+      </div>
       </div>
     </Nav>
   );
@@ -62,7 +72,7 @@ const Nav = styled.nav`
     rgb(40, 49, 59, 0.9),   rgb(72, 84, 97, 0.7)
   );  height: 7vh;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 
   .logo-container {
@@ -76,6 +86,19 @@ const Nav = styled.nav`
     .logo {
       width: 3.125rem;
       height: 3.125rem;
+    }
+  }
+
+  .right-side {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 1rem;
+    
+    .email {
+      margin-right: 1rem;
+      color: #fff;
+      
     }
   }
 

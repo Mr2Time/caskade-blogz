@@ -11,7 +11,8 @@ export const userAuth = async (req, res) => {
 
     const { email, password } = req.body;
 
-    const user = await User.findOne({email}).populate("blogs");
+    const user = await User.findOne({ email });
+
     if(!user) return res.status(401).send({message: "Invalid email or password."});
 
     const validPass = await compareSync(password, user.password);

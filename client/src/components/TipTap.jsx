@@ -5,10 +5,11 @@ import Image from "@tiptap/extension-image";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import styled from "styled-components";
-import { useDispatch, useSelector } from 'react-redux';
-import {setWholeState} from '../reducers/blogSlice';
-import Spinner from './Spinner';
-import axios from 'axios';
+import { useDispatch, useSelector } from "react-redux";
+import { setWholeState } from "../reducers/blogSlice";
+import Spinner from "./Spinner";
+import axios from "axios";
+import ErrorPage from "./ErrorPage";
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -97,7 +98,7 @@ const MenuBar = ({ editor }) => {
       </button>
       <button
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        className={editor.isActive('blockquote') ? 'is-active' : ''}
+        className={editor.isActive("blockquote") ? "is-active" : ""}
       >
         blockquote
       </button>
@@ -125,15 +126,16 @@ const MenuBar = ({ editor }) => {
 export default () => {
   let [blog, setBlog] = useState({});
   const [loading, setLoading] = useState(false);
-  const tempContent = useSelector(state => state.blog.content)
-  const state = useSelector(state => state)
-  const [content,setContent] = useState(tempContent);
+  const tempContent = useSelector((state) => state.blog.content);
+  const state = useSelector((state) => state);
+  const [content, setContent] = useState(tempContent);
   const dispatch = useDispatch();
+  const Auth = useSelector((state) => state.user.auth);
 
   const titleRef = useRef();
   const descRef = useRef();
   const tagsRef = useRef();
-  
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -146,81 +148,86 @@ export default () => {
       }),
       Highlight,
     ],
-    content: '' || content,
+    content: "" || content,
     onUpdate({ editor }) {
-      setContent(editor.getHTML())
+      setContent(editor.getHTML());
     },
-});
+  });
 
-const escapeDoubleQuotes = (string) => {
-  return string.replace(/"/g, '\\"');
-}
+  const escapeDoubleQuotes = (string) => {
+    return string.replace(/"/g, '\\"');
+  };
 
   const id = localStorage.getItem("user");
 
-  const handleBlogPost = () => {
+  const HandleBlogPost = async () => {
     setLoading(true);
-     const title = titleRef.current.value;
-     const description = descRef.current.value;
-     const tags = [...tagsRef.current.value.split(" ")];
+    const title = titleRef.current.value;
+    const description = descRef.current.value;
+    const tags = [...tagsRef.current.value.split(" ")];
     const blog = { title, content, description, tags, userId: JSON.parse(id) };
     setBlog(blog);
     dispatch(setWholeState(blog));
+
+    try {
+      const res = await axios({
+        method: "POST",
+        url: "http://localhost:8000/api/blog/posts",
+        data: blog,
+      })
+      setLoading(false);
+      console.log("posted: ",res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  useEffect(() => {
-    let tContent = escapeDoubleQuotes(`${content}`);
-    console.log(blog)
-    axios({
-      method: 'post',
-      url: 'http://localhost:8000/api/blog/posts',
-      data: blog,
-    })
-    .then(function (response) {
-      console.log("posted",response);
-      setLoading(false);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  },[state]);
-
   // check if content exists in database
-  
+
   return (
     <>
-    {loading ? <Spinner /> : (
-       <Container>
-       <div className="editor">
-         <MenuBar editor={editor} />
-         <input placeholder="title..." className="title-inp" ref={titleRef} />
-         <EditorContent editor={editor} />
-         <textarea
-           rows="10"
-           placeholder="enter blog description here..."
-           ref={descRef}
-           ></textarea>
-         <input
-           placeholder="tags [technology - education - coding - lifestyle]"
-           className="editor-tags"
-           ref={tagsRef}
-           />
- 
-         <div className="cal-sub">
-           <button className="blog-cancel">Cancel</button>
-           <button className="blog-submit" onClick={handleBlogPost}>
-             Submit
-           </button>
-         </div>
-       </div>
-     </Container>
-    )}
-          </>
+      {Auth ? (
+        <>
+          {loading ? (
+            <Spinner />
+          ) : (
+            <Container>
+              <div className="editor">
+                <MenuBar editor={editor} />
+                <input
+                  placeholder="title..."
+                  className="title-inp"
+                  ref={titleRef}
+                />
+                <EditorContent editor={editor} />
+                <textarea
+                  rows="10"
+                  placeholder="enter blog description here..."
+                  ref={descRef}
+                ></textarea>
+                <input
+                  placeholder="tags [technology - education - coding - lifestyle]"
+                  className="editor-tags"
+                  ref={tagsRef}
+                />
+                <div className="cal-sub">
+                  <button className="blog-cancel">Cancel</button>
+                  <button className="blog-submit" onClick={HandleBlogPost}>
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </Container>
+          )}
+        </>
+      ) : (
+        <ErrorPage />
+      )}
+    </>
   );
 };
 
 const Container = styled.div`
-
   width: 100%;
   display: flex;
   justify-content: center;
@@ -349,7 +356,6 @@ const Container = styled.div`
     border: 1px solid #36e38f;
     border-radius: 0.2rem;
     font-size: 1rem;
-
   }
 
   textarea {
@@ -363,7 +369,6 @@ const Container = styled.div`
     }
     border-radius: 0.5rem;
     font-size: 1rem;
-
   }
 
   button {

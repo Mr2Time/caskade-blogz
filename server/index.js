@@ -7,7 +7,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import connectToDB from "./config/config.js";
 
-import { userSignup } from "./routes/routes.user.js";
+import userRouter from "./routes/routes.user.js";
 import { userAuth } from "./routes/routes.auth.js";
 import blogRouter from './routes/routes.blog.js';
 
@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
 });
 
 // routes here
-app.use("/api/users/register", userSignup);
+app.use("/api/users", userRouter);
 app.use("/api/users/auth", userAuth);
 app.use("/api/blog/posts", blogRouter);
 
