@@ -19,7 +19,6 @@ export default function MBlogs({ blogs,  auth }) {
 }
 
 const Container = styled.div`
-  position: relative;
   width: 70%;
   display: flex;
   flex-direction: column;

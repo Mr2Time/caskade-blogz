@@ -6,10 +6,12 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setWholeState } from "../reducers/blogSlice";
 import Spinner from "./Spinner";
 import axios from "axios";
 import ErrorPage from "./ErrorPage";
+import ErrorModal from "./ErrorModal";
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -124,13 +126,18 @@ const MenuBar = ({ editor }) => {
 };
 
 export default () => {
-  let [blog, setBlog] = useState({});
+  const [blog, setBlog] = useState({
+    title: "",
+    description: "",
+    tags: "",
+  });
   const [loading, setLoading] = useState(false);
   const tempContent = useSelector((state) => state.blog.content);
-  const state = useSelector((state) => state);
+  const [error, setError] = useState();
   const [content, setContent] = useState(tempContent);
   const dispatch = useDispatch();
   const Auth = useSelector((state) => state.user.auth);
+  const navigate = useNavigate();
 
   const titleRef = useRef();
   const descRef = useRef();
@@ -160,25 +167,42 @@ export default () => {
 
   const id = localStorage.getItem("user");
 
-  const HandleBlogPost = async () => {
-    setLoading(true);
-    const title = titleRef.current.value;
-    const description = descRef.current.value;
-    const tags = [...tagsRef.current.value.split(" ")];
-    const blog = { title, content, description, tags, userId: JSON.parse(id) };
-    setBlog(blog);
-    dispatch(setWholeState(blog));
+  const handleOnChange = (e) => {
+    setBlog({ ...blog, [e.target.name]: e.target.value });
+  }
 
+  const HandleBlogPost = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    const title = blog.title;
+    const description = blog.description;
+    const tags = blog.tags.split(" ");
+    console.log(tags)
+    const sendBlog = { title, content, description, tags, userId: JSON.parse(id) };
+    console.log("SEND BLOG IS: ",sendBlog)
+    dispatch(setWholeState(sendBlog));
+
+    
     try {
       const res = await axios({
         method: "POST",
         url: "http://localhost:8000/api/blog/posts",
-        data: blog,
+        data: sendBlog,
       })
+      
+     if(res.data.status == 400) {
+        console.log(res.data)
+        setError(res.data.message)
+        setLoading(false);
+     } else {
+        setLoading(false);
+        navigate("/my-blogs");
+     }
+     } catch (error) {
       setLoading(false);
-      console.log("posted: ",res.data);
-    } catch (error) {
-      console.log(error);
+      setError(error.response.data);
+      console.log(error.response.data);
     }
   };
 
@@ -191,38 +215,47 @@ export default () => {
           {loading ? (
             <Spinner />
           ) : (
-            <Container>
+            <>
+                <ErrorModal err={error} setError={setError}/>
+            <Container error={error}>
               <div className="editor">
                 <MenuBar editor={editor} />
                 <input
                   placeholder="title..."
                   className="title-inp"
-                  ref={titleRef}
-                />
+                  name="title"
+                  value={blog.title}
+                  onChange={(e) => handleOnChange(e)}
+                  />
                 <EditorContent editor={editor} />
                 <textarea
                   rows="10"
                   placeholder="enter blog description here..."
-                  ref={descRef}
-                ></textarea>
+                  value={blog.description}
+                  name="description"
+                  onChange={(e) => handleOnChange(e)}
+                  ></textarea>
                 <input
                   placeholder="tags [technology - education - coding - lifestyle]"
                   className="editor-tags"
-                  ref={tagsRef}
+                  name="tags"
+                  value={blog.tags}
+                  onChange={(e) => handleOnChange(e)}
                 />
                 <div className="cal-sub">
                   <button className="blog-cancel">Cancel</button>
-                  <button className="blog-submit" onClick={HandleBlogPost}>
+                  <button className="blog-submit" onClick={(e) => HandleBlogPost(e)}>
                     Submit
                   </button>
                 </div>
               </div>
             </Container>
+          </>
           )}
         </>
       ) : (
         <ErrorPage />
-      )}
+        )}
     </>
   );
 };
@@ -232,6 +265,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  filter: ${({ error }) => (error ? "blur(5px)" : "none")};
 
   .editor {
     position: relative;
@@ -416,4 +450,5 @@ const Container = styled.div`
     background-color: rgb(223, 47, 47);
     color: white;
   }
+
 `;

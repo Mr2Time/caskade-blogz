@@ -19,13 +19,14 @@ export default function Create() {
 }
 
 const CreateContainer = styled.div`
+  
   .circles {
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
-    height: 25vmin;
-    width: 25vmin;
+    height: 22vmin;
+    width: 22vmin;
     top: 75%;
     left: 87%;
 
