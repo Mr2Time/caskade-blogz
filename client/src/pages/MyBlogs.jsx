@@ -5,11 +5,13 @@ import axios from "axios";
 import ErrorPage from "../components/ErrorPage";
 import styled from "styled-components";
 import { userData } from "../reducers/userSlice";
-import MBlogs from "../components/MBlogs";
+import Spinner from "../components/Spinner";
+import Cards from "../components/Cards";
 
 export default function MyBlogs() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [loading, setLoading] = React.useState(false);
 
   
   // const firstImg = firstImg.match(/<img[^>]*>/)[0];
@@ -17,6 +19,7 @@ export default function MyBlogs() {
   const uri = "http://localhost:8000/api/users/myblogs";
   
   useEffect(() => {
+    setLoading(true);
     const getMyBlogs = async () => {
     const userId = localStorage.getItem("user");
       try {
@@ -31,6 +34,8 @@ export default function MyBlogs() {
       } catch (error) {
         console.log(error);
       }
+
+      setLoading(false);
     };
 
     getMyBlogs();
@@ -41,11 +46,14 @@ export default function MyBlogs() {
   return (
     <Container>
       {user.auth ? (
-        <div>
-          User's blogs here, show cards
-          <MBlogs blogs={user.blogs} auth={user.auth} />
+        <>
+        {loading ? <Spinner /> : (
+          <div>
+          <Cards blogs={user.blogs} auth={user.auth}/>
           <Create />
         </div>
+          )}
+        </>
       ) : (
         <ErrorPage />
       )}
@@ -54,8 +62,6 @@ export default function MyBlogs() {
 }
 
 const Container = styled.div`
-  position: relative;
-  height: 93vh;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -6,7 +6,7 @@ const Blogs = ({data}) => {
     return (
         <Container>
             <Create />
-            All blogs page, show every blog
+            <img src="https://cdn.gobankingrates.com/wp-content/uploads/2019/07/Beautiful-luxury-home-exterior-iStock-1054759884.jpg?quality=75&amp;w=500" />
         </Container>
     );
 }

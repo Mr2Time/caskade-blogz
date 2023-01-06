@@ -31,6 +31,9 @@ const blogSchema = new Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+  },
+  headerImg: {
+    type: String,
   }
 }, {
   timestamps: true,

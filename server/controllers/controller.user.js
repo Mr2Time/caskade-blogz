@@ -35,11 +35,24 @@ export const getUserBlogs = async (req,res) => {
         id = id.replace(/"/g, "");
         const user = await User.findOne({_id: id});
         let blog = await Blog.find({userId: user._id});
+      
+      
         // filter blog, return if userId === id
-        const filteredBlogs = blog.filter((blog) => blog.userId !== user._id);        
+        let filteredBlogs = blog.filter((blog) => blog.userId !== user._id);        
+      
+        filteredBlogs.forEach((blog) => {
+            let img = blog.content.match(/<img.*?src="(.*?)"/);
+            if (img) {
+                blog.headerImg = img[1];
+            } else {
+                blog.headerImg = "";
+            }
+        });
+
         user.blogs = filteredBlogs;
+
         if (!user) return res.status(404).send({ message: "User not found." });
-        res.status(200).send({user});
+        res.status(200).send({user, filteredBlogs});
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
