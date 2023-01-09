@@ -178,21 +178,18 @@ export default () => {
     const title = blog.title;
     const description = blog.description;
     const tags = blog.tags.split(" ");
-    console.log(tags)
     const sendBlog = { title, content, description, tags, userId: JSON.parse(id) };
-    console.log("SEND BLOG IS: ",sendBlog)
     dispatch(setWholeState(sendBlog));
 
     
     try {
       const res = await axios({
         method: "POST",
-        url: "http://localhost:8000/api/blog/posts",
+        url: "http://localhost:8000/api/blogs/posts",
         data: sendBlog,
       })
       
      if(res.data.status == 400) {
-        console.log(res.data)
         setError(res.data.message)
         setLoading(false);
      } else {
@@ -202,7 +199,6 @@ export default () => {
      } catch (error) {
       setLoading(false);
       setError(error.response.data);
-      console.log(error.response.data);
     }
   };
 
@@ -261,6 +257,7 @@ export default () => {
 };
 
 const Container = styled.div`
+  background: #fff;
   width: 100%;
   display: flex;
   justify-content: center;

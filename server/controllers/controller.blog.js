@@ -7,10 +7,7 @@ export const postBlog = async (req, res) => {
     const { error } = blogVal(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    // checks if user sent email/username & checks password, sends over info
-    console.log(req.body)
     const user = await User.findOne({ _id: req.body.userId });
-    console.log("USER: ",user)
 
     if (!user)
       return res.send({
@@ -24,8 +21,16 @@ export const postBlog = async (req, res) => {
 
     if (!content && !title) {
       const blog = await new Blog(req.body);
-      await blog.save();
 
+      let img = blog.content.match(/<img.*?src="(.*?)"/);
+      if (img) {
+          blog.headerImg = img[1];
+      } else {
+          blog.headerImg = "";
+      }
+      // set blog.email to user.email
+      blog.author = user.email;
+      await blog.save();
       res.json({
         status: 200,
         message: "Post saved succesfully.",
@@ -45,15 +50,18 @@ export const postBlog = async (req, res) => {
   }
 };
 
-// test get
 
 export const getBlog = async (req, res) => {
   try {
-    const blog = await Blog.find();
-    res.json(blog);
+    const blog = await Blog.find().select(["title", "content", "author", "headerImg", "tags", "description", "createdAt"]);
+    res.json({
+      status: 200,
+      message: "Post retrieved succesfully.",
+      blog: blog,
+    });
   } catch (er) {
     res.send({
-      status: 400,
+      status: 500,
       message: `Error ${er}`,
     });
   }

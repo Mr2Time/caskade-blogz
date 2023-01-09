@@ -10,6 +10,7 @@ import MyBlogs from './pages/MyBlogs';
 import Blogs from './pages/Blogs';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import BlogPage from './pages/BlogPage';
 
 import GlobalStyle from './components/GlobalStyles';
 
@@ -32,6 +33,8 @@ function App() {
             <Route path="editor" element={<TipTap />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
+            // page when post is clicked on whether its allblogs or myblogs
+            <Route path="blog/:id" element={<BlogPage />} />
           </Route>
           <Route path="*" element={<Home />} />
         </Routes>

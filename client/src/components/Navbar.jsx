@@ -18,7 +18,7 @@ const handleLogout = (dispatch) => {
 const Navbar = ({Auth, dispatch, Email}) => {
 
   let email = Auth ? Email.split('@')[0] : '';
-  email = email.charAt(0).toUpperCase() + email.slice(1);
+  email = email.charAt(0).toLowerCase() + email.slice(1);
 
   return (
     <Nav>

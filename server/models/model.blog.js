@@ -15,13 +15,13 @@ const blogSchema = new Schema({
       type: String,
       required: true,
       unique: true,
-      maxlength: 5000,
+      maxlength: 10000,
       minlength: 5,
   },
   description: {
     type: String,
     required: true,
-    maxlength: 300,
+    maxlength: 500,
     minlength: 5,
   },
   tags: {
@@ -31,6 +31,9 @@ const blogSchema = new Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+  },
+  author: {
+    type: String,
   },
   headerImg: {
     type: String,

@@ -52,7 +52,7 @@ export const getUserBlogs = async (req,res) => {
         user.blogs = filteredBlogs;
 
         if (!user) return res.status(404).send({ message: "User not found." });
-        res.status(200).send({user, filteredBlogs});
+        res.status(200).send({user});
     } catch (error) {
         res.status(500).send({ message: error.message });
     }

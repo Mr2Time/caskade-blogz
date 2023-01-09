@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
 // routes here
 app.use("/api/users", userRouter);
 app.use("/api/users/auth", userAuth);
-app.use("/api/blog/posts", blogRouter);
+app.use("/api/blogs/posts", blogRouter);
 
 // connecting to db
 connectToDB();

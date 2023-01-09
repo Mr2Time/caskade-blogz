@@ -9,7 +9,8 @@ const GlobalStyle = createGlobalStyle`
     }
 
     body {
-        font-family: "JetBrainsMono", monospace;
+        font-family: "Arial", monospace;
+        background-color: #1b1b1b;
     }
 
     .loader-container {
@@ -25,7 +26,13 @@ const GlobalStyle = createGlobalStyle`
         height: 80px;
         animation: spin 1s linear infinite;
       }
-    }
+  }
+
+  img {
+    max-width: 100%;
+    object-fit: cover;
+    opacity: 0.9;
+  }
 
 @keyframes spin {
   0% {

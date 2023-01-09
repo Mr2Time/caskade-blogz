@@ -29,9 +29,7 @@ function checkIfImageExists(url, callback) {
 export default function Cards({ blogs,  auth }) {
 
   const user = useSelector((state) => state.user);
-
-  //   
-
+  const author = user.email.slice(0, user.email.indexOf('@'));
   return (
     <Container>
       {auth && blogs ? blogs.map((blog) => {
@@ -39,9 +37,7 @@ export default function Cards({ blogs,  auth }) {
         checkIfImageExists(blog.headerImg, (exists) => {
           if (exists) {
             img = blog.headerImg;
-            console.log('exists', img);
           } else {
-            console.log('does not exist', img);
           }
         });
         return (
@@ -51,6 +47,8 @@ export default function Cards({ blogs,  auth }) {
             description={blog.description}
             tags={blog.tags}
             key={blog._id}
+            author={author}
+            date={blog.createdAt.slice(0, 10)}
           />
         );
       }) : (
@@ -61,23 +59,20 @@ export default function Cards({ blogs,  auth }) {
 }
 
 const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 2rem 0;
-  flex-wrap: wrap;
-  width: 100%;
+  width: 80%;
   height: 100vh;
-  background: #f5f5f5;
-
-
-
-  img {
-      width: 20rem;
-      max-height: 20rem;
-      margin-left: auto;
-      margin-right: auto;
-      border-radius: 0.5rem;
-      object-fit: cover;
-    }
-
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-gap: 2rem 0;
+  margin: 0 auto;
+  @media (max-width: 1500px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 `;

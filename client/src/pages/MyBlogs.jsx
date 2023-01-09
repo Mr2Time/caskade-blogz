@@ -30,9 +30,8 @@ export default function MyBlogs() {
         const {email, blogs } = res.data.user;
 
         dispatch(userData({id, email, blogs}))
-        console.log(res.data);
       } catch (error) {
-        console.log(error);
+        setLoading(true)
       }
 
       setLoading(false);
@@ -48,10 +47,10 @@ export default function MyBlogs() {
       {user.auth ? (
         <>
         {loading ? <Spinner /> : (
-          <div>
+          <>
           <Cards blogs={user.blogs} auth={user.auth}/>
-          <Create />
-        </div>
+          {/* <Create /> */}
+        </>
           )}
         </>
       ) : (
@@ -62,7 +61,5 @@ export default function MyBlogs() {
 }
 
 const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+   margin-top:  5rem;
 `;
