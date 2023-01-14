@@ -39,8 +39,6 @@ const Blogs = () => {
           try {
               const res = await axios.get(uri);
               // decontruct
-              let title  = res.data.blog;
-              console.log("setting state with: ",title)
               dispatch(setWholeState({...res.data.blog}));
               setLoading(false);
             } catch (error) {
@@ -49,7 +47,6 @@ const Blogs = () => {
             }
         }
         getBlogs();
-        
     }, []);
 
     const blogs = useSelector(state => state.blog);
@@ -59,8 +56,6 @@ const Blogs = () => {
             {loading ?  <Spinner  /> : (
                 <AllBlogs>
                 {
-                    
-                    // loop  through the blogs object and render the card component
                     Object.keys(blogs).map((key, index) => {
                         let img;
                         checkIfImageExists(blogs[key].headerImg, (exists) => {
@@ -75,11 +70,10 @@ const Blogs = () => {
                                 img = placeholder01;
                             }
                         });
-                        console.log("img: ", img)
                         return (
-                            
                             <Card 
                             key={index}
+                            id={blogs[key]._id}
                             img={img ? img : placeholder01}
                             title={blogs[key].title}
                             description={blogs[key].description}
@@ -102,13 +96,14 @@ const Container = styled.div`
 
 
 const AllBlogs = styled.div`
-  width: 80%;
-  height: 100vh;
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  grid-gap: 2rem 0;
-  margin: 0 auto;
+  margin-top: 5rem;
+  justify-items: center;
+  align-items: center;
+  grid-gap: 1.5rem 0;uto;
   @media (max-width: 1500px) {
     grid-template-columns: repeat(3, 1fr);
   }

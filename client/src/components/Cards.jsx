@@ -42,6 +42,7 @@ export default function Cards({ blogs,  auth }) {
         });
         return (
           <Card
+            id={blog._id}
             img={img ? img : placeholder01}
             title={blog.title}
             description={blog.description}
@@ -59,13 +60,15 @@ export default function Cards({ blogs,  auth }) {
 }
 
 const Container = styled.div`
-  width: 80%;
-  height: 100vh;
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  grid-gap: 2rem 0;
-  margin: 0 auto;
+  // center the cards
+  margin-top: 5rem;
+  justify-items: center;
+  align-items: center;
+  grid-gap: 1.5rem 0;
   @media (max-width: 1500px) {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -76,3 +79,4 @@ const Container = styled.div`
     grid-template-columns: repeat(1, 1fr);
   }
 `;
+

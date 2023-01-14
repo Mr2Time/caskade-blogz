@@ -50,6 +50,24 @@ export const postBlog = async (req, res) => {
   }
 };
 
+// get specific blog post by id
+
+export const getBlogById = async (req, res) => {
+  try {
+    const blog = await Blog.findOne({ _id: req.params.id }).select(["title", "content", "author", "headerImg", "tags", "description", "createdAt"]);
+    res.json({
+      status: 200,
+      message: "Post retrieved succesfully.",
+      blog: blog,
+    });
+  } catch (er) {
+    res.send({
+      status: 500,
+      message: `Error ${er}`,
+    });
+  }
+};
+
 
 export const getBlog = async (req, res) => {
   try {

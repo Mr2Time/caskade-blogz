@@ -18,8 +18,9 @@ const NoAuth = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 93vh;
-  width: 100vw;
+  // make height of the container 100% of the viewport
+  height: 100vh;
+  width: 100%;
   background: linear-gradient(
     to right top,
     rgb(40, 49, 59, 0.9),   rgb(72, 84, 97, 0.7)

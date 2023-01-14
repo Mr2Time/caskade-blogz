@@ -61,5 +61,4 @@ export default function MyBlogs() {
 }
 
 const Container = styled.div`
-   margin-top:  5rem;
 `;

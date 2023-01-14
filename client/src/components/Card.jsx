@@ -1,10 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import userpfp from  '../assets/user-profile-picture.png';
 
-const Card = ({img, title, description, tags, author, date}) => {
+const Card = ({id, img, title, description, tags, author, date}) => {
+    const navigate = useNavigate();
     return (
-        <CardContainer>
+        <CardContainer onClick={() => navigate(`/blog/${id}`)}>
             <div className='card-header'>
             <img src={img} alt="card-header-image" />
             </div>
@@ -35,9 +37,9 @@ const CardContainer = styled.div`
 
     .card-header {
         width: 100%;
-        height: 60%;
+        height: 50%;
         img {
-            width: 100%;
+            width: 30rem;
             height: 100%;
             object-fit: cover;
             border-top-left-radius: 0.5rem;
