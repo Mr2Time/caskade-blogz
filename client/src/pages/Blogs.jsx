@@ -26,7 +26,7 @@ function checkIfImageExists(url, callback) {
     
   }
 
-const Blogs = () => {
+const Blogs = ({navFilterLoading}) => {
 
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
@@ -53,7 +53,7 @@ const Blogs = () => {
 
     return (
         <Container>
-            {loading ?  <Spinner  /> : (
+            {loading || navFilterLoading ?  <Spinner  /> : (
                 <AllBlogs>
                 {
                     Object.keys(blogs).map((key, index) => {
@@ -78,7 +78,7 @@ const Blogs = () => {
                             title={blogs[key].title}
                             description={blogs[key].description}
                             tags={blogs[key].tags}
-                            author={blogs[key].author}
+                            author={blogs[key].author.slice(0, blogs[key].author.indexOf("@"))}
                             date={blogs[key].createdAt.slice(0, 10)}
                             />
                             )

@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { fade } from "../animations";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { setAuth, userData } from "../reducers/userSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { setWholeState } from "../reducers/blogSlice";
+import axios from "axios";
 
 import logo from "../assets/logo.png";
 
@@ -13,12 +16,44 @@ const handleLogout = (dispatch) => {
   localStorage.removeItem("data");
   dispatch(setAuth(false));
   dispatch(userData({}));
-}
+};
 
-const Navbar = ({Auth, dispatch, Email}) => {
+const Navbar = ({ Auth, dispatch, Email, setNavFilterLoading }) => {
+  const location = useLocation();
+  let path = location.pathname;
 
-  let email = Auth ? Email.split('@')[0] : '';
+  let email = Auth ? Email.split("@")[0] : "";
   email = email.charAt(0).toLowerCase() + email.slice(1);
+  
+  const blogsCopy = JSON.stringify(useSelector((state) => state.blog));
+  const allBlogs = useSelector((state) => state.blog);
+  const myBlogs = useSelector((state) => state.user.blogs);
+  const [filter, setFilter] = useState("");
+  const originalState = useMemo(() => JSON.parse(blogsCopy), []);
+  
+  useEffect(() => {
+    setNavFilterLoading(true);
+    let filteredBlogs = [];
+    const keys = Object.keys(allBlogs);
+    if (filter.startsWith("nat")) {
+      // reset the state to the original state
+      dispatch(setWholeState(originalState));
+      console.log("original state", originalState);
+      filteredBlogs = keys.filter(key => allBlogs[key].tags.some(tag => tag.startsWith("nat"))).map((key, index) => ({index, ...allBlogs[key]})
+      );
+    } else if (filter.startsWith("tech")) {
+      filteredBlogs = keys.filter(key => allBlogs[key].tags.some(tag => tag.startsWith("tech"))).map((key, index) => ({index, ...allBlogs[key]})
+      );
+    } else if (filter.startsWith("edu")) {
+      filteredBlogs = keys.filter(key => allBlogs[key].tags.some(tag => tag.startsWith("edu"))).map((key, index) => ({index, ...allBlogs[key]})
+      );
+    } else {
+      filteredBlogs = keys.map((key, index) => ({index, ...allBlogs[key]})
+      );
+    }
+    dispatch(setWholeState(filteredBlogs));
+    setNavFilterLoading(false);
+  }, [filter]);
 
   return (
     <Nav>
@@ -26,41 +61,55 @@ const Navbar = ({Auth, dispatch, Email}) => {
         <img src={logo} alt="" className="logo" />
         <p className="blog-name">Blogs-Nd-All</p>
       </Link>
+      <div className={`filter-buttons ${path === '/' ? 'hidden' : '' }`}>
+        <button className="filter-btn" onClick={() => setFilter("nature")}>Nature</button>
+        <button className="filter-btn" onClick={() => setFilter("tech")}>Tech</button>
+        <button className="filter-btn" onClick={() => setFilter("education")}>Education</button>
+      </div>
       <ul className="nav-links">
         <li>
-          <Link to="/" className="nav-link">
+          <Link to="/" className={`nav-link ${path === "/" ? "active" : ""}`}>
             Home
           </Link>
         </li>
         <li>
-          <Link to="blogs" className="nav-link">
+          <Link
+            to="blogs"
+            className={`nav-link ${path === "/blogs" ? "active" : ""}`}
+          >
             All Blogs
           </Link>
         </li>
         <li>
-          <Link to="my-blogs" className="nav-link">
+          <Link
+            to="my-blogs"
+            className={`nav-link ${path === "/my-blogs" ? "active" : ""}`}
+          >
             My Blogs
           </Link>
         </li>
       </ul>
-      <div className='right-side'>
-      <div className='email'>
-        {Auth && <p>{email}</p>}
-      </div>
-      <div className="login-signup-btns">
-      {Auth ? (
-        <button className='signup-btn' onClick={() => handleLogout(dispatch)}>Logout</button>
-        ) : (
-          <>
-        <Link to="/login" className="login-btn">
-        Login
-      </Link>
-      <Link to="/signup" className="signup-btn">
-        Signup
-      </Link>
-        </>
-      )}
-      </div>
+      <div className="right-side">
+        <div className="email">{Auth && <p>{email}</p>}</div>
+        <div className="login-signup-btns">
+          {Auth ? (
+            <button
+              className="signup-btn"
+              onClick={() => handleLogout(dispatch)}
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link to="/login" className="login-btn">
+                Login
+              </Link>
+              <Link to="/signup" className="signup-btn">
+                Signup
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </Nav>
   );
@@ -69,11 +118,50 @@ const Navbar = ({Auth, dispatch, Email}) => {
 const Nav = styled.nav`
   background: linear-gradient(
     to right bottom,
-    rgb(40, 49, 59, 0.9),   rgb(72, 84, 97, 0.7)
-  );  height: 7vh;
+    rgb(40, 49, 59, 0.9),
+    rgb(72, 84, 97, 0.7)
+  );
+  height: 7vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  .hidden {
+    display: none;
+  }
+
+  .filter-buttons {
+    position: absolute;
+    left: 35%;
+
+    // make a border between filter buttons and the ul element to the right
+
+    ::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: -1rem;
+      height: 100%;
+      width: 1px;
+      background: #fff;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-family: "Chivo Mono", monospace;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.25s ease-in;
+      &:hover {
+        color: #23d997;
+      }
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
+    }
+  }
 
   .logo-container {
     width: 10%;
@@ -94,11 +182,10 @@ const Nav = styled.nav`
     align-items: center;
     justify-content: space-between;
     margin: 0 1rem;
-    
+
     .email {
       margin-right: 1rem;
       color: #fff;
-      
     }
   }
 
@@ -130,22 +217,26 @@ const Nav = styled.nav`
   }
 
   ul {
-    margin-left: 20vh;
+    margin-left: 15vh;
     display: flex;
     list-style: none;
 
     li {
-      padding: 1rem 2rem;
+      padding: 1rem 0.5rem;
       .nav-link {
         text-decoration: none;
         color: #fff;
         font-family: "Chivo Mono", monospace;
         font-size: medium;
       }
+      .active {
+        border-bottom: 2px solid #23d997;
+        padding-bottom: 0.5rem;
+      }
     }
 
     @media screen and (max-width: 768px) {
-      display: none;  
+      display: none;
     }
   }
 `;

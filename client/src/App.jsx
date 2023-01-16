@@ -21,15 +21,17 @@ function App() {
   const User = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const [navFilterLoading, setNavFilterLoading] = useState(false);
+
   return (
     <>
       <GlobalStyle />
-      <Nav Auth={User.auth} dispatch={dispatch} Email={User.email}/>
+      <Nav Auth={User.auth} dispatch={dispatch} Email={User.email} setNavFilterLoading={setNavFilterLoading}/>
       <Routes location={pathname} key={key}>
           <Route path="/">
             <Route index element={<Home />} />
-            <Route path="blogs" element={<Blogs />} />
-            <Route path="my-blogs" element={<MyBlogs />} />
+            <Route path="blogs" element={<Blogs navFilterLoading={navFilterLoading}/>} />
+            <Route path="my-blogs" element={<MyBlogs navFilterLoading={navFilterLoading}/>} />
             <Route path="editor" element={<TipTap />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />

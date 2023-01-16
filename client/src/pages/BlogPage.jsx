@@ -6,9 +6,9 @@ import styled from "styled-components";
 import Spinner from "./../components/Spinner";
 import parse from "html-react-parser";
 
-const BlogPage = () => {
+const BlogPage = ({navFilterLoading}) => {
   const { id } = useParams();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [blog, setBlog] = useState({});
 
   const uri = `http://localhost:8000/api/blogs/posts/${id}`;
@@ -30,7 +30,7 @@ const BlogPage = () => {
 
   return (
     <>
-      {loading ? (
+      {loading || navFilterLoading ? (
         <Spinner />
       ) : (
         <Container>
