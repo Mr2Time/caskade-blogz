@@ -6,7 +6,6 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { setAuth, userData } from "../reducers/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { setWholeState } from "../reducers/blogSlice";
-import axios from "axios";
 
 import logo from "../assets/logo.png";
 
@@ -18,40 +17,97 @@ const handleLogout = (dispatch) => {
   dispatch(userData({}));
 };
 
-const Navbar = ({ Auth, dispatch, Email, setNavFilterLoading }) => {
+const Navbar = ({ Auth, dispatch, Email, setNavFilterLoading, setFBlogs, setMFBlogs, setErrorFiltering }) => {
   const location = useLocation();
   let path = location.pathname;
 
   let email = Auth ? Email.split("@")[0] : "";
   email = email.charAt(0).toLowerCase() + email.slice(1);
-  
-  const blogsCopy = JSON.stringify(useSelector((state) => state.blog));
+
   const allBlogs = useSelector((state) => state.blog);
   const myBlogs = useSelector((state) => state.user.blogs);
+  const blog = path === "/blogs" ? allBlogs : myBlogs;
   const [filter, setFilter] = useState("");
-  const originalState = useMemo(() => JSON.parse(blogsCopy), []);
   
   useEffect(() => {
     setNavFilterLoading(true);
-    let filteredBlogs = [];
-    const keys = Object.keys(allBlogs);
+    let filteredBlogs;
+    const keys = path === "/blogs" ? Object.keys(allBlogs) : Object.keys(myBlogs);
     if (filter.startsWith("nat")) {
-      // reset the state to the original state
-      dispatch(setWholeState(originalState));
-      console.log("original state", originalState);
-      filteredBlogs = keys.filter(key => allBlogs[key].tags.some(tag => tag.startsWith("nat"))).map((key, index) => ({index, ...allBlogs[key]})
-      );
-    } else if (filter.startsWith("tech")) {
-      filteredBlogs = keys.filter(key => allBlogs[key].tags.some(tag => tag.startsWith("tech"))).map((key, index) => ({index, ...allBlogs[key]})
-      );
-    } else if (filter.startsWith("edu")) {
-      filteredBlogs = keys.filter(key => allBlogs[key].tags.some(tag => tag.startsWith("edu"))).map((key, index) => ({index, ...allBlogs[key]})
-      );
-    } else {
-      filteredBlogs = keys.map((key, index) => ({index, ...allBlogs[key]})
-      );
+      filteredBlogs = keys.filter(key => blog[key].tags.some(tag => tag.startsWith("nat"))).map((key, index) => ({index, ...blog[key]}));
+      // check if filtered blogs is empty, set error message if it is empty
+      if (filteredBlogs.length === 0 || filteredBlogs === undefined) {
+        setErrorFiltering({
+          status: true,
+          message: "0 Blogs Found"
+        })
+        return;
+      } else {
+        setErrorFiltering({
+          status: false,
+          message: ""
+        })
+      }
+      if (path === "/blogs") {
+        setFBlogs(filteredBlogs);
+      } else if (path === "/my-blogs") {
+        setMFBlogs(filteredBlogs);
+      }
+    } 
+    if (filter.startsWith("tech")) {
+      filteredBlogs = keys.filter(key => blog[key].tags.some(tag => tag.startsWith("tech"))).map((key, index) => ({index, ...blog[key]}));
+      // check the route and set the blogs accordingly
+      if (filteredBlogs.length === 0 || filteredBlogs === undefined) {
+        setErrorFiltering({
+          status: true,
+          message: "0 Blogs Found"
+        })
+        return;
+      } else {
+        setErrorFiltering({
+          status: false,
+          message: ""
+        })
+      }
+      if (path === "/blogs") {
+        setFBlogs(filteredBlogs);
+      } else if (path === "/my-blogs") {
+        setMFBlogs(filteredBlogs);
+      }
+    } 
+    if (filter.startsWith("edu")) {
+      filteredBlogs = keys.filter(key => blog[key].tags.some(tag => tag.startsWith("edu"))).map((key, index) => ({index, ...blog[key]}));
+      
+      // check if filtered blogs isnt empty
+      if (filteredBlogs.length === 0 || filteredBlogs === undefined) {
+        // set error message
+        setErrorFiltering({
+          status: true,
+          message: "0 Blogs Found"
+        })
+        return;
+      } else {
+        setErrorFiltering({
+          status: false,
+          message: ""
+        })
+      }
+      if (path === "/blogs") {
+        setFBlogs(filteredBlogs);
+      } else if (path === "/my-blogs") {
+        setMFBlogs(filteredBlogs);
+      }
     }
-    dispatch(setWholeState(filteredBlogs));
+
+    // if user clicks on clear button
+    if (filter === "") {
+      if (path === "/blogs") {
+        setFBlogs(allBlogs);
+      } else if (path === "/my-blogs") {
+        setMFBlogs(myBlogs);
+      }
+    }
+
     setNavFilterLoading(false);
   }, [filter]);
 
@@ -65,6 +121,7 @@ const Navbar = ({ Auth, dispatch, Email, setNavFilterLoading }) => {
         <button className="filter-btn" onClick={() => setFilter("nature")}>Nature</button>
         <button className="filter-btn" onClick={() => setFilter("tech")}>Tech</button>
         <button className="filter-btn" onClick={() => setFilter("education")}>Education</button>
+        <button className="filter-btn" onClick={() => setFilter("")}>Clear</button>
       </div>
       <ul className="nav-links">
         <li>

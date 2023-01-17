@@ -6,6 +6,7 @@ import Card from '../components/Card';
 import styled from 'styled-components';
 import Spinner from './../components/Spinner';
 import placeholder01 from '../assets/placeholder-01.png';
+import NoBlogs from './NoBlogs';
 
 
 function checkIfImageExists(url, callback) {
@@ -26,31 +27,31 @@ function checkIfImageExists(url, callback) {
     
   }
 
-const Blogs = ({navFilterLoading}) => {
+const Blogs = ({navFilterLoading, FBlogs, setFBlogs, errorFiltering}) => {
 
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     
     const uri  = 'http://localhost:8000/api/blogs/posts';
     
+    const ABlogs = useSelector((state) => state.blog);
+    const blogs = FBlogs ? FBlogs : ABlogs;
+
     useEffect(() => {
       const  getBlogs = async () => {
           setLoading(true);
           try {
               const res = await axios.get(uri);
-              // decontruct
               dispatch(setWholeState({...res.data.blog}));
+              setFBlogs(res.data.blog);
               setLoading(false);
             } catch (error) {
                 setLoading(true);
-                console.log(error);
             }
         }
         getBlogs();
     }, []);
-
-    const blogs = useSelector(state => state.blog);
-
+    
     return (
         <Container>
             {loading || navFilterLoading ?  <Spinner  /> : (
@@ -71,6 +72,8 @@ const Blogs = ({navFilterLoading}) => {
                             }
                         });
                         return (
+                          <>
+                          {errorFiltering.status ? <NoBlogs /> : (
                             <Card 
                             key={index}
                             id={blogs[key]._id}
@@ -81,6 +84,8 @@ const Blogs = ({navFilterLoading}) => {
                             author={blogs[key].author.slice(0, blogs[key].author.indexOf("@"))}
                             date={blogs[key].createdAt.slice(0, 10)}
                             />
+                            )}
+                            </>
                             )
                         })
                 }
@@ -103,7 +108,8 @@ const AllBlogs = styled.div`
   margin-top: 5rem;
   justify-items: center;
   align-items: center;
-  grid-gap: 1.5rem 0;uto;
+  grid-gap: 1.5rem 0;
+
   @media (max-width: 1500px) {
     grid-template-columns: repeat(3, 1fr);
   }

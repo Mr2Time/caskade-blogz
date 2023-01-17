@@ -6,9 +6,9 @@ import styled from "styled-components";
 import Spinner from "./../components/Spinner";
 import parse from "html-react-parser";
 
-const BlogPage = ({navFilterLoading}) => {
+const BlogPage = () => {
   const { id } = useParams();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [blog, setBlog] = useState({});
 
   const uri = `http://localhost:8000/api/blogs/posts/${id}`;
@@ -22,7 +22,6 @@ const BlogPage = ({navFilterLoading}) => {
         setLoading(false);
       } catch (error) {
         setLoading(true);
-        console.log(error);
       }
     };
     fetchBlog();
@@ -30,7 +29,7 @@ const BlogPage = ({navFilterLoading}) => {
 
   return (
     <>
-      {loading || navFilterLoading ? (
+      {loading ? (
         <Spinner />
       ) : (
         <Container>
@@ -75,37 +74,30 @@ const Container = styled.div`
     width: 90%;
   }
   color: #000000;
-
   .blog-header {
     height: 5rem;
     display: flex;
     justify-content: space-around;
     align-items: center;
     /* background: #c9b7b7; */
-
     .blog-header-left {
       
       background: #c9b7b7;
       padding: 0.5rem;
       border-radius: 5px;
-
       p {
         font-size: 1rem;
         font-weight: 600;
         color: #000000;
         margin: 0 1rem;
-
       }
-
     }
-
     .blog-header-center {
       h1 {
         font-size: 2rem;
         font-weight: 600;
         // font-face elianto-regular in assets folder
         font-family: "Elianto-Regular", "lobster";
-
         // make border bottom span half the width of the title
         position: relative;
         &::after {
@@ -119,7 +111,6 @@ const Container = styled.div`
         }
       }
     }
-
     .blog-header-right {
       display: flex;
       justify-content: center;
@@ -145,9 +136,7 @@ const Container = styled.div`
       }
     }
   }
-
   .blog-content {
-
     margin-top: 2rem;
     p {
       font-size: 1rem;
@@ -155,7 +144,6 @@ const Container = styled.div`
       color: #000000;
       line-height: 2;
     }
-
     img {
       width: 100%;
       height: 60vh;
@@ -163,7 +151,6 @@ const Container = styled.div`
       margin: 1.5rem 0;
     }
   }
-
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 `;
