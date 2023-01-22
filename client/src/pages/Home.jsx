@@ -5,21 +5,17 @@ import styled from 'styled-components';
 const Home = () => {
     return (
         <Container>
-            <Create />
             Home Page
         </Container>
     );
 }
 
 const Container = styled.div`
-
 position: relative;
 overflow: hidden;
 width: 100%;
-  height: 93vh;
-  display: flex;
-  justify-content: center;
-    align-items: center;
+height: 93vh;
+  
 `;
 
 export default Home;

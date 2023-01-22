@@ -37,6 +37,9 @@ const blogSchema = new Schema({
   },
   headerImg: {
     type: String,
+  },
+  comments: {
+    type: Array,
   }
 }, {
   timestamps: true,

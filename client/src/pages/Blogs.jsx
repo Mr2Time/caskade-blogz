@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Spinner from './../components/Spinner';
 import placeholder01 from '../assets/placeholder-01.png';
 import NoBlogs from './NoBlogs';
+import { current } from '@reduxjs/toolkit';
 
 
 function checkIfImageExists(url, callback) {
@@ -24,7 +25,6 @@ function checkIfImageExists(url, callback) {
         callback(false);
       };
     }
-    
   }
 
 const Blogs = ({navFilterLoading, FBlogs, setFBlogs, errorFiltering}) => {
@@ -33,11 +33,30 @@ const Blogs = ({navFilterLoading, FBlogs, setFBlogs, errorFiltering}) => {
     const [loading, setLoading] = useState(true);
     
     const uri  = 'http://localhost:8000/api/blogs/posts';
-    
     const ABlogs = useSelector((state) => state.blog);
-    const blogs = FBlogs ? FBlogs : ABlogs;
+
+    let blogs = FBlogs ? FBlogs : ABlogs;
+
+    // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(8);
+  const lastPostIndex = currentPage * postsPerPage;
+  const firstPostIndex = lastPostIndex - postsPerPage;
+  let currentPosts = Object.keys(blogs).slice(firstPostIndex, lastPostIndex);
+
+  // change page
+  const paginate = (pageNumber) => {
+    if (
+      pageNumber > 0 &&
+      pageNumber <= Math.ceil(Object.keys(blogs).length / postsPerPage)
+    ) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
 
     useEffect(() => {
+
       const  getBlogs = async () => {
           setLoading(true);
           try {
@@ -51,60 +70,94 @@ const Blogs = ({navFilterLoading, FBlogs, setFBlogs, errorFiltering}) => {
         }
         getBlogs();
     }, []);
-    
+
+    useEffect(() => {
+      currentPosts = Object.keys(blogs).slice(firstPostIndex, lastPostIndex);
+      setCurrentPage(1);
+    }, [FBlogs]);
+
+    console.log(Object.keys(currentPosts).length);
+
     return (
-        <Container>
-            {loading || navFilterLoading ?  <Spinner  /> : (
-                <AllBlogs>
-                {
-                    Object.keys(blogs).map((key, index) => {
-                        let img;
-                        checkIfImageExists(blogs[key].headerImg, (exists) => {
+      <>
+          <Container>
+              {loading || navFilterLoading ?  <Spinner  /> : (
+              <>
+                  {errorFiltering.status || Object.values(blogs).length === 0 ? <NoBlogs /> : (
+                  <AllBlogs>
+                      {
+                      Object.keys(blogs).slice(firstPostIndex, lastPostIndex).map((key, index) => {
+                          let img;
+                          checkIfImageExists(blogs[key].headerImg, (exists) => {
+                          if(exists && blogs[key].headerImg) {
+                              img = blogs[key].headerImg;
+                          }
+                          if (exists) {
+                              img = blogs[key].headerImg;
+                          } else {
+                              img = placeholder01;
+                          }
+                          });
+                          return (
+                          <Card 
+                              key={index}
+                              id={blogs[key]._id}
+                              img={img ? img : placeholder01}
+                              title={blogs[key].title}
+                              description={blogs[key].description}
+                              tags={blogs[key].tags}
+                              author={blogs[key].author.slice(0, blogs[key].author.indexOf("@"))}
+                              date={blogs[key].createdAt.slice(0, 10)}
+                          />
+                          )
+                      })
+                      }
+                  </AllBlogs>
+                  )}
+              </>
+              )}
+          </Container>
+          
+          {Object.values(currentPosts).length !== 1 ? (
+              <Pagination>
+                  <button onClick={() => paginate(currentPage - 1)}>&lt;</button>
+                  <p className="page-num">{currentPage}</p>
+                  <button onClick={() => paginate(currentPage + 1)}>&gt;</button>
+              </Pagination>
+          ) : <span></span>}
+      </>
+      );
 
-                            if(exists && blogs[key].headerImg) {
-                                img = blogs[key].headerImg;
-                            }
-
-                            if (exists) {
-                                img = blogs[key].headerImg;
-                            } else {
-                                img = placeholder01;
-                            }
-                        });
-                        return (
-                          <>
-                          {errorFiltering.status ? <NoBlogs /> : (
-                            <Card 
-                            key={index}
-                            id={blogs[key]._id}
-                            img={img ? img : placeholder01}
-                            title={blogs[key].title}
-                            description={blogs[key].description}
-                            tags={blogs[key].tags}
-                            author={blogs[key].author.slice(0, blogs[key].author.indexOf("@"))}
-                            date={blogs[key].createdAt.slice(0, 10)}
-                            />
-                            )}
-                            </>
-                            )
-                        })
-                }
-                </AllBlogs>
-                )}
-        </Container>
-    );
 }
 
 const Container = styled.div`
-    margin-top:  5rem;
 `;
 
+const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 1rem 0;
+  button {
+    cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: 50%;
+    background-color: #fff;
+  }
+  .page-num {
+    margin: 0 1rem;
+    color: #fff;
+  }
+`;
 
 const AllBlogs = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   margin-top: 5rem;
   justify-items: center;
   align-items: center;

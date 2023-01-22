@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const NoBlogs = () => {
     return (
         <NBlogs>
-            <h1>No Blogs Found</h1>
+            <h1>0 Blogs Found</h1>
         </NBlogs>
     );
 }
@@ -14,6 +14,8 @@ export default NoBlogs;
 
 const NBlogs = styled.div`
 height: 93vh;
+width: 100vw;
+
 background: linear-gradient(
     to right top,
     rgb(40, 49, 59, 0.9),   rgb(72, 84, 97, 0.7)

@@ -17,7 +17,15 @@ const handleLogout = (dispatch) => {
   dispatch(userData({}));
 };
 
-const Navbar = ({ Auth, dispatch, Email, setNavFilterLoading, setFBlogs, setMFBlogs, setErrorFiltering }) => {
+const Navbar = ({
+  Auth,
+  dispatch,
+  Email,
+  setNavFilterLoading,
+  setFBlogs,
+  setMFBlogs,
+  setErrorFiltering,
+}) => {
   const location = useLocation();
   let path = location.pathname;
 
@@ -28,69 +36,76 @@ const Navbar = ({ Auth, dispatch, Email, setNavFilterLoading, setFBlogs, setMFBl
   const myBlogs = useSelector((state) => state.user.blogs);
   const blog = path === "/blogs" ? allBlogs : myBlogs;
   const [filter, setFilter] = useState("");
-  
+
   useEffect(() => {
     setNavFilterLoading(true);
     let filteredBlogs;
-    const keys = path === "/blogs" ? Object.keys(allBlogs) : Object.keys(myBlogs);
+    const keys =
+      path === "/blogs" ? Object.keys(allBlogs) : Object.keys(myBlogs);
     if (filter.startsWith("nat")) {
-      filteredBlogs = keys.filter(key => blog[key].tags.some(tag => tag.startsWith("nat"))).map((key, index) => ({index, ...blog[key]}));
+      filteredBlogs = keys
+        .filter((key) => blog[key].tags.some((tag) => tag.startsWith("nat")))
+        .map((key, index) => ({ index, ...blog[key] }));
       // check if filtered blogs is empty, set error message if it is empty
       if (filteredBlogs.length === 0 || filteredBlogs === undefined) {
         setErrorFiltering({
           status: true,
-          message: "0 Blogs Found"
-        })
+          message: "0 Blogs Found",
+        });
         return;
       } else {
         setErrorFiltering({
           status: false,
-          message: ""
-        })
+          message: "",
+        });
       }
       if (path === "/blogs") {
         setFBlogs(filteredBlogs);
       } else if (path === "/my-blogs") {
         setMFBlogs(filteredBlogs);
       }
-    } 
+    }
     if (filter.startsWith("tech")) {
-      filteredBlogs = keys.filter(key => blog[key].tags.some(tag => tag.startsWith("tech"))).map((key, index) => ({index, ...blog[key]}));
+      filteredBlogs = keys
+        .filter((key) => blog[key].tags.some((tag) => tag.startsWith("tech")))
+        .map((key, index) => ({ index, ...blog[key] }));
       // check the route and set the blogs accordingly
       if (filteredBlogs.length === 0 || filteredBlogs === undefined) {
         setErrorFiltering({
           status: true,
-          message: "0 Blogs Found"
-        })
+          message: "0 Blogs Found",
+        });
         return;
       } else {
         setErrorFiltering({
           status: false,
-          message: ""
-        })
+          message: "",
+        });
       }
       if (path === "/blogs") {
         setFBlogs(filteredBlogs);
       } else if (path === "/my-blogs") {
         setMFBlogs(filteredBlogs);
       }
-    } 
+    }
     if (filter.startsWith("edu")) {
-      filteredBlogs = keys.filter(key => blog[key].tags.some(tag => tag.startsWith("edu"))).map((key, index) => ({index, ...blog[key]}));
-      
+      filteredBlogs = keys
+        .filter((key) => blog[key].tags.some((tag) => tag.startsWith("edu")))
+        .map((key, index) => ({ index, ...blog[key] }));
+
       // check if filtered blogs isnt empty
       if (filteredBlogs.length === 0 || filteredBlogs === undefined) {
         // set error message
         setErrorFiltering({
           status: true,
-          message: "0 Blogs Found"
-        })
+          message: "0 Blogs Found",
+        });
         return;
       } else {
         setErrorFiltering({
           status: false,
-          message: ""
-        })
+          message: "",
+        });
       }
       if (path === "/blogs") {
         setFBlogs(filteredBlogs);
@@ -111,17 +126,76 @@ const Navbar = ({ Auth, dispatch, Email, setNavFilterLoading, setFBlogs, setMFBl
     setNavFilterLoading(false);
   }, [filter]);
 
+  // create search handler for search bar
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setSearch(e.target.value.toLowerCase());
+
+    let filteredBlogs;
+    const keys =
+      path === "/blogs" ? Object.keys(allBlogs) : Object.keys(myBlogs);
+      // filter blogs by title or description
+      filteredBlogs = keys
+      .filter((key) => blog[key].title.toLowerCase().includes(search))
+      .map((key, index) => ({ index, ...blog[key] }));
+    
+    // check if filtered blogs isnt empty
+    if (filteredBlogs.length === 0 || filteredBlogs === undefined) {
+      // set error message
+      setErrorFiltering({
+        status: true,
+        message: "0 Blogs Found",
+      });
+
+      return;
+    } else {
+      setErrorFiltering({
+        status: false,
+        message: "",
+      });
+    }
+    if (path === "/blogs") {
+      setFBlogs(filteredBlogs);
+    } else if (path === "/my-blogs") {
+      setMFBlogs(filteredBlogs);
+    }
+  };
+
+  useEffect(() => {
+    if (search === "") {
+      if (path === "/blogs") {
+        setFBlogs(allBlogs);
+      } else if (path === "/my-blogs") {
+        setMFBlogs(myBlogs);
+      }
+    }
+  }, [search]);
+
   return (
     <Nav>
       <Link to="/" className="logo-container">
         <img src={logo} alt="" className="logo" />
-        <p className="blog-name">Blogs-Nd-All</p>
+        <p className="blog-name">caskadeblogz</p>
       </Link>
-      <div className={`filter-buttons ${path === '/' ? 'hidden' : '' }`}>
-        <button className="filter-btn" onClick={() => setFilter("nature")}>Nature</button>
-        <button className="filter-btn" onClick={() => setFilter("tech")}>Tech</button>
-        <button className="filter-btn" onClick={() => setFilter("education")}>Education</button>
-        <button className="filter-btn" onClick={() => setFilter("")}>Clear</button>
+      <div
+        className={`filter-buttons ${
+          path === "/" || path === "/editor" ? "hidden" : ""
+        }`}
+      >
+        <button className="filter-btn" onClick={() => setFilter("nature")}>
+          Nature
+        </button>
+        <button className="filter-btn" onClick={() => setFilter("tech")}>
+          Tech
+        </button>
+        <button className="filter-btn" onClick={() => setFilter("education")}>
+          Education
+        </button>
+        <button className="filter-btn clear-btn" onClick={() => setFilter("")}>
+          Clear
+        </button>
       </div>
       <ul className="nav-links">
         <li>
@@ -144,6 +218,30 @@ const Navbar = ({ Auth, dispatch, Email, setNavFilterLoading, setFBlogs, setMFBl
           >
             My Blogs
           </Link>
+        </li>
+        <li>
+          <Link
+            to="editor"
+            className={`nav-link create-btn ${
+              path === "/editor" ? "active" : ""
+            }`}
+          >
+            Create+
+          </Link>
+        </li>
+        <li
+          className={`nav-link ${
+            path === "/blogs" || path === "/my-blogs" ? "active" : "hidden"
+          }`}
+        >
+          <input
+            type="text"
+            placeholder="search..."
+            className="search-input"
+            onChange={(e) => {
+              handleSearch(e);
+            }}
+          />
         </li>
       </ul>
       <div className="right-side">
@@ -183,24 +281,19 @@ const Nav = styled.nav`
   justify-content: space-between;
   align-items: center;
 
-  .hidden {
-    display: none;
-  }
-
   .filter-buttons {
+    display: block;
     position: absolute;
-    left: 35%;
+    left: 27%;
 
-    // make a border between filter buttons and the ul element to the right
-
-    ::after {
+    &::after {
       content: "";
       position: absolute;
       top: 0;
       right: -1rem;
       height: 100%;
       width: 1px;
-      background: #fff;
+      background: #929292;
     }
 
     .filter-btn {
@@ -212,12 +305,19 @@ const Nav = styled.nav`
       cursor: pointer;
       transition: all 0.25s ease-in;
       &:hover {
-        color: #23d997;
+        color: #ff7676;
       }
       &:not(:last-child) {
         margin-right: 1rem;
       }
+
+      &.clear-btn {
+        color: #ff7676;
+      }
     }
+  }
+  .hidden {
+    display: none;
   }
 
   .logo-container {
@@ -274,7 +374,7 @@ const Nav = styled.nav`
   }
 
   ul {
-    margin-left: 15vh;
+    margin-left: 19rem;
     display: flex;
     list-style: none;
 
@@ -286,12 +386,36 @@ const Nav = styled.nav`
         font-family: "Chivo Mono", monospace;
         font-size: medium;
       }
+      .search-input {
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid #fff;
+        color: #fff;
+        font-family: "Chivo Mono", monospace;
+        font-size: medium;
+        width: 15rem;
+        height: 1.5rem;
+        transition: all 0.5s ease-in;
+        // make the border come together on focus and hover
+        &:focus {
+          outline: none;
+          border-bottom: 1px solid #23d997;
+        }
+      }
+
+      .create-btn {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        &:hover {
+          color: #23d997;
+        }
+      }
       .active {
         border-bottom: 2px solid #23d997;
         padding-bottom: 0.5rem;
       }
     }
-
     @media screen and (max-width: 768px) {
       display: none;
     }
