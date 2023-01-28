@@ -35,6 +35,7 @@ export default function Login() {
       });
       localStorage.setItem('token', data.data);
       localStorage.setItem('user', JSON.stringify(user.id));
+      localStorage.setItem('email', JSON.stringify(user.email));
       dispatch(userData(user));
       dispatch(setAuth(true));
       navigate('/my-blogs');

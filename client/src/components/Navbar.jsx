@@ -12,7 +12,7 @@ import logo from "../assets/logo.png";
 const handleLogout = (dispatch) => {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
-  localStorage.removeItem("data");
+  localStorage.removeItem("email");
   dispatch(setAuth(false));
   dispatch(userData({}));
 };
@@ -29,7 +29,8 @@ const Navbar = ({
   const location = useLocation();
   let path = location.pathname;
 
-  let email = Auth ? Email.split("@")[0] : "";
+
+  let email = Auth ? JSON.parse(localStorage.getItem("email")).split("@")[0] : "";
   email = email.charAt(0).toLowerCase() + email.slice(1);
 
   const allBlogs = useSelector((state) => state.blog);

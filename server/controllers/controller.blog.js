@@ -54,7 +54,8 @@ export const postBlog = async (req, res) => {
 
 export const getBlogById = async (req, res) => {
   try {
-    const blog = await Blog.findOne({ _id: req.params.id }).select(["title", "content", "author", "headerImg", "tags", "description", "createdAt"]);
+    const blog = await Blog.findById({ _id: req.params.id}).select(["title", "content", "author", "headerImg", "tags", "description", "createdAt", "comments"]);
+    
     res.json({
       status: 200,
       message: "Post retrieved succesfully.",
@@ -71,7 +72,13 @@ export const getBlogById = async (req, res) => {
 
 export const getBlog = async (req, res) => {
   try {
-    const blog = await Blog.find().select(["title", "content", "author", "headerImg", "tags", "description", "createdAt"]);
+    const blog = await Blog.find().select(["title", "content", "author", "headerImg", "tags", "description", "createdAt", ]);
+    
+    if(!blog) return res.send({
+      status: 400,
+      message: "No blog posts found.",
+    });
+
     res.json({
       status: 200,
       message: "Post retrieved succesfully.",
@@ -84,3 +91,28 @@ export const getBlog = async (req, res) => {
     });
   }
 }
+
+// listen for requests about comments
+export const postComment = async (req, res) => {
+  try {
+    const blog = await Blog.findById({ _id: req.params.id });
+    if (!blog)
+      return res.send({
+        status: 400,
+        message: "No blog post found.",
+      });
+
+    blog.comments.push(req.body);
+    await blog.save();
+    res.json({
+      status: 200,
+      message: "Comment saved succesfully.",
+      blog: blog,
+    });
+  } catch (er) {
+    res.send({
+      status: 500,
+      message: `Error ${er}`,
+    });
+  }
+};
