@@ -76,8 +76,6 @@ const Blogs = ({navFilterLoading, FBlogs, setFBlogs, errorFiltering}) => {
       setCurrentPage(1);
     }, [FBlogs]);
 
-    console.log(Object.keys(currentPosts).length);
-
     return (
       <>
           <Container>
@@ -118,7 +116,7 @@ const Blogs = ({navFilterLoading, FBlogs, setFBlogs, errorFiltering}) => {
               )}
           </Container>
           
-          {Object.values(currentPosts).length !== 1 ? (
+          {Object.values(currentPosts) ? (
               <Pagination>
                   <button onClick={() => paginate(currentPage - 1)}>&lt;</button>
                   <p className="page-num">{currentPage}</p>

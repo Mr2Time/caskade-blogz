@@ -12,116 +12,15 @@ import Spinner from "./Spinner";
 import axios from "axios";
 import ErrorPage from "./ErrorPage";
 import ErrorModal from "./ErrorModal";
+import TTMenuBar from "./TTMenuBar";
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
     return null;
   }
 
-  const addImage = () => {
-    const url = window.prompt("URL");
-
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
-  };
-
   return (
-    <div className="menu-bar">
-      <button
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        disabled={!editor.can().chain().focus().toggleBold().run()}
-        className={editor.isActive("bold") ? "is-active" : ""}
-      >
-        Bold
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        disabled={!editor.can().chain().focus().toggleItalic().run()}
-        className={editor.isActive("italic") ? "is-active" : ""}
-      >
-        Italic
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        disabled={!editor.can().chain().focus().toggleStrike().run()}
-        className={editor.isActive("strike") ? "is-active" : ""}
-      >
-        Strike
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={editor.isActive("heading", { level: 1 }) ? "is-active" : ""}
-      >
-        H1
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        className={editor.isActive("heading", { level: 2 }) ? "is-active" : ""}
-      >
-        H2
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        className={editor.isActive("heading", { level: 3 }) ? "is-active" : ""}
-      >
-        H3
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setParagraph().run()}
-        className={editor.isActive("paragraph") ? "is-active" : ""}
-      >
-        Paragraph
-      </button>
-
-      <button
-        onClick={() => editor.chain().focus().toggleHighlight().run()}
-        className={editor.isActive("highlight") ? "is-active" : ""}
-      >
-        Highlight
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setTextAlign("left").run()}
-        className={editor.isActive({ textAlign: "left" }) ? "is-active" : ""}
-      >
-        Left
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setTextAlign("center").run()}
-        className={editor.isActive({ textAlign: "center" }) ? "is-active" : ""}
-      >
-        Center
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setTextAlign("right").run()}
-        className={editor.isActive({ textAlign: "right" }) ? "is-active" : ""}
-      >
-        Right
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        className={editor.isActive("blockquote") ? "is-active" : ""}
-      >
-        blockquote
-      </button>
-      <button onClick={() => editor.chain().focus().unsetAllMarks().run()}>
-        clear marks
-      </button>
-      <button onClick={addImage}>Image(URL)</button>
-
-      <button
-        onClick={() => editor.chain().focus().undo().run()}
-        disabled={!editor.can().chain().focus().undo().run()}
-      >
-        Undo
-      </button>
-      <button
-        onClick={() => editor.chain().focus().redo().run()}
-        disabled={!editor.can().chain().focus().redo().run()}
-      >
-        Redo
-      </button>
-    </div>
+    <TTMenuBar editor={editor} />
   );
 };
 
@@ -181,7 +80,6 @@ export default () => {
     const sendBlog = { title, content, description, tags, userId: JSON.parse(id) };
     dispatch(setWholeState(sendBlog));
 
-    
     try {
       const res = await axios({
         method: "POST",
@@ -202,8 +100,6 @@ export default () => {
     }
   };
 
-  // check if content exists in database
-
   return (
     <>
       {Auth ? (
@@ -212,10 +108,9 @@ export default () => {
             <Spinner />
           ) : (
             <>
-                <ErrorModal err={error} setError={setError}/>
+            <ErrorModal err={error} setError={setError}/>
             <Container error={error}>
               <div className="editor">
-                <MenuBar editor={editor} />
                 <input
                   placeholder="title..."
                   className="title-inp"
@@ -223,16 +118,17 @@ export default () => {
                   value={blog.title}
                   onChange={(e) => handleOnChange(e)}
                   />
+                <MenuBar editor={editor} />
                 <EditorContent editor={editor} />
                 <textarea
                   rows="10"
-                  placeholder="enter blog description here..."
+                  placeholder="description..."
                   value={blog.description}
                   name="description"
                   onChange={(e) => handleOnChange(e)}
                   ></textarea>
                 <input
-                  placeholder="tags [technology - education - coding - lifestyle]"
+                  placeholder="tags [technology education coding lifestyle] space separated"
                   className="editor-tags"
                   name="tags"
                   value={blog.tags}
@@ -256,13 +152,16 @@ export default () => {
   );
 };
 
+
+
 const Container = styled.div`
-  background: #fff;
   width: 100%;
+  height: 100%;
+  background: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
-  filter: ${({ error }) => (error ? "blur(5px)" : "none")};
+  margin-bottom: 0;
 
   .editor {
     position: relative;
@@ -271,20 +170,32 @@ const Container = styled.div`
   }
 
   .menu-bar {
+    margin-top: 1rem;
     position: sticky;
     z-index: 2;
     top: 0;
+    border: 1px solid #aba9a9;
+    border-top-left-radius: 0.3rem;
+    border-top-right-radius: 0.3rem;
+
   }
 
   /* Basic editor styles */
   .ProseMirror {
-    min-height: 50vh;
-    border: 2px solid black;
-    border-radius: 10px;
+    min-height: 70vh;
+    // give the editor a neuromorphic look
+    color: #000000;
+    font-family: "JetBrainsMono", monospace;
+    line-height: 1.5;
+    outline: none;
     position: relative;
     z-index: 1;
-    margin-top: 1rem;
     padding: 1rem;
+    border-bottom: 1px solid #aba9a9;
+    border-right: 1px solid #aba9a9;
+    border-left: 1px solid #aba9a9;
+    border-bottom-left-radius: 0.3rem;
+    border-bottom-right-radius: 0.3rem;
 
     > * + * {
       margin-top: 0.75em;
@@ -368,53 +279,69 @@ const Container = styled.div`
   .title-inp {
     width: 100%;
     height: 2rem;
-    &:focus {
-      outline: none;
-    }
+    outline: none;
     padding: 0.2rem 0.5rem;
-    border: 1.5px dashed #f40f0f;
+    margin-top: 1rem;
     border-radius: 0.2rem;
     font-size: 1rem;
+    border: none;
+    border-bottom: 1px solid #000c06;
+    transition: all 0.3s ease-in-out;
+    &:focus {
+      border-bottom: 1px solid #04cefb;
+    }
   }
 
   .editor-tags {
     width: 100%;
     height: 2rem;
-    &:focus {
-      outline: none;
-    }
+    outline: none;
     padding: 0.2rem 0.5rem;
-    border: 1px solid #36e38f;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     border-radius: 0.2rem;
     font-size: 1rem;
+    border: none;
+    border-radius: 0px;
+box-shadow:  -5px 5px 10px #bab8b8,
+             5px -5px 10px #ffffff;
+
   }
 
   textarea {
-    padding-top: 0.5rem;
-    padding-left: 0.5rem;
-    margin-top: 1rem;
     width: 100%;
-    height: 100%;
-    &:focus {
-      outline: none;
-    }
-    border-radius: 0.5rem;
+    height: 10rem;
+    outline: none;
+    padding: 0.5rem;
+    margin-top: 1rem;
+    border-radius: 0.2rem;
     font-size: 1rem;
+    border: none;
+    border-top: 1px solid #000c06;
+    border-bottom: 1px solid #000c06;
+    transition: all 0.3s ease-in-out;
+    &:focus {
+      border-top: 1px solid #04cefb;
+      border-bottom: 1px solid #04cefb;
+
+    }
+
   }
 
   button {
-    background-color: #0d0d0d;
-    color: #fff;
+    color: #000;
     border: none;
+    border-bottom: 1px solid #000c06;
+    border-top: 1px solid #000c06;
     border-radius: 0.5rem;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.5rem;
     margin: 0.5rem;
     cursor: pointer;
     font-family: "JetBrainsMono", monospace;
     font-size: 1rem;
+    background-color: #fff;
+    
     &:hover {
-      box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
-        rgba(0, 0, 0, 0.23) 0px 6px 6px;
       transform: translateY(-2px);
     }
   }
@@ -433,18 +360,16 @@ const Container = styled.div`
     font-family: "JetBrainsMono", monospace;
     font-size: 1rem;
     &:hover {
-      box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
-        rgba(0, 0, 0, 0.23) 0px 6px 6px;
       transform: translateY(-1px);
     }
   }
 
   .blog-submit {
-    background-color: rgb(73, 232, 73);
+    background-color: rgb(116, 244, 116);
     color: black;
   }
   .blog-cancel {
-    background-color: rgb(223, 47, 47);
+    background-color: rgb(255, 45, 45);
     color: white;
   }
 

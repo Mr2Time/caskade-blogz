@@ -15,25 +15,14 @@ const GlobalStyle = createGlobalStyle`
     rgb(40, 49, 59, 0.9),   rgb(72, 84, 97, 0.7)
     
     );
-    // make the body full screen
-    height: 100%;
+    background-repeat: no-repeat;
     }
-
 
   img {
     max-width: 100%;
     object-fit: cover;
     opacity: 0.9;
   }
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-} 
 
 `;
 export default GlobalStyle;
