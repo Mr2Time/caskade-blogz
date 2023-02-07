@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import Image from "@tiptap/extension-image";
@@ -13,6 +13,9 @@ import axios from "axios";
 import ErrorPage from "./ErrorPage";
 import ErrorModal from "./ErrorModal";
 import TTMenuBar from "./TTMenuBar";
+import { pageAnimation  } from "../animations";
+import {motion} from "framer-motion";
+
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -102,12 +105,14 @@ export default () => {
 
   return (
     <>
+      <motion.div variants={pageAnimation} initial='hidden' animate='show' exit='exit'>
+
       {Auth ? (
         <>
           {loading ? (
             <Spinner />
-          ) : (
-            <>
+            ) : (
+              <>
             <ErrorModal err={error} setError={setError}/>
             <Container error={error}>
               <div className="editor">
@@ -133,7 +138,7 @@ export default () => {
                   name="tags"
                   value={blog.tags}
                   onChange={(e) => handleOnChange(e)}
-                />
+                  />
                 <div className="cal-sub">
                   <button className="blog-cancel">Cancel</button>
                   <button className="blog-submit" onClick={(e) => HandleBlogPost(e)}>
@@ -148,6 +153,7 @@ export default () => {
       ) : (
         <ErrorPage />
         )}
+</motion.div>
     </>
   );
 };
@@ -303,8 +309,12 @@ const Container = styled.div`
     font-size: 1rem;
     border: none;
     border-radius: 0px;
-box-shadow:  -5px 5px 10px #bab8b8,
-             5px -5px 10px #ffffff;
+    background: #f5f5f5;
+    border-bottom: 1px solid #000c06;
+    transition: all 0.3s ease-in-out;
+    &:focus {
+      border-bottom: 1px solid #04cefb;
+    }
 
   }
 

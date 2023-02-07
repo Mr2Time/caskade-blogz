@@ -7,7 +7,8 @@ import styled from 'styled-components';
 import Spinner from './../components/Spinner';
 import placeholder01 from '../assets/placeholder-01.png';
 import NoBlogs from './NoBlogs';
-import { current } from '@reduxjs/toolkit';
+import { pageAnimation  } from "../animations";
+import {motion} from "framer-motion";
 
 
 function checkIfImageExists(url, callback) {
@@ -78,37 +79,38 @@ const Blogs = ({navFilterLoading, FBlogs, setFBlogs, errorFiltering}) => {
 
     return (
       <>
+    <motion.div variants={pageAnimation} initial='hidden' animate='show' exit='exit'>
           <Container>
               {loading || navFilterLoading ?  <Spinner  /> : (
-              <>
+                <>
                   {errorFiltering.status || Object.values(blogs).length === 0 ? <NoBlogs /> : (
-                  <AllBlogs>
+                    <AllBlogs>
                       {
-                      Object.keys(blogs).slice(firstPostIndex, lastPostIndex).map((key, index) => {
+                        Object.keys(blogs).slice(firstPostIndex, lastPostIndex).map((key, index) => {
                           let img;
                           checkIfImageExists(blogs[key].headerImg, (exists) => {
-                          if(exists && blogs[key].headerImg) {
+                            if(exists && blogs[key].headerImg) {
                               img = blogs[key].headerImg;
-                          }
-                          if (exists) {
+                            }
+                            if (exists) {
                               img = blogs[key].headerImg;
-                          } else {
+                            } else {
                               img = placeholder01;
-                          }
+                            }
                           });
                           return (
                           <Card 
-                              key={index}
-                              id={blogs[key]._id}
-                              img={img ? img : placeholder01}
-                              title={blogs[key].title}
-                              description={blogs[key].description}
-                              tags={blogs[key].tags}
-                              author={blogs[key].author.slice(0, blogs[key].author.indexOf("@"))}
-                              date={blogs[key].createdAt.slice(0, 10)}
+                          key={index}
+                          id={blogs[key]._id}
+                          img={img ? img : placeholder01}
+                          title={blogs[key].title}
+                          description={blogs[key].description}
+                          tags={blogs[key].tags}
+                          author={blogs[key].author.slice(0, blogs[key].author.indexOf("@"))}
+                          date={blogs[key].createdAt.slice(0, 10)}
                           />
                           )
-                      })
+                        })
                       }
                   </AllBlogs>
                   )}
@@ -117,12 +119,13 @@ const Blogs = ({navFilterLoading, FBlogs, setFBlogs, errorFiltering}) => {
           </Container>
           
           {Object.values(currentPosts) ? (
-              <Pagination>
+            <Pagination>
                   <button onClick={() => paginate(currentPage - 1)}>&lt;</button>
                   <p className="page-num">{currentPage}</p>
                   <button onClick={() => paginate(currentPage + 1)}>&gt;</button>
               </Pagination>
           ) : <span></span>}
+          </motion.div>
       </>
       );
 
@@ -161,14 +164,17 @@ const AllBlogs = styled.div`
   align-items: center;
   grid-gap: 1.5rem 0;
 
-  @media (max-width: 1500px) {
+  @media (max-width: 1700px) {
     grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  }
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 2fr);
+  grid-template-rows: repeat(2, 1fr);
   }
   @media (max-width: 900px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (max-width: 600px) {
     grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   }
 `;
 export default Blogs;

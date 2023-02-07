@@ -6,8 +6,9 @@ import {useFormik } from "formik";
 import {useDispatch} from 'react-redux';
 import {userData, setAuth} from '../reducers/userSlice';
 import Spinner from "../components/Spinner";
-
+import { motion } from "framer-motion";
 import registernew from "../assets/register-new.png";
+import { loginAnimation } from './../animations';
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -54,8 +55,11 @@ export default function Login() {
   
   return (
     <>
+           <motion.div variants={loginAnimation} initial='hidden' animate='show' exit='exit'>
+
+
     {loading ? <Spinner /> : (
-    <Container>
+      <Container>
       <FormContainer>
         <div className="image-section">
           <img src={registernew} alt="register-img" />
@@ -78,7 +82,7 @@ export default function Login() {
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.password}
-          />
+            />
           <button type="submit">Login</button>
           <div>
             Don't have an account? <Link to="/signup">Signup</Link>
@@ -89,6 +93,7 @@ export default function Login() {
       </FormContainer>
     </Container>
     )}
+  </motion.div>
   </>
   );
 }

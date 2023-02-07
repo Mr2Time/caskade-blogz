@@ -182,7 +182,8 @@ const Navbar = ({
       </Link>
       <div
         className={`filter-buttons ${
-          path === "/" || path === "/editor" ? "hidden" : ""
+          // if path is my-blogs or blogs then show filter buttons else give it a class hidden
+          path === "/my-blogs" || path === "/blogs" ? "" : "hidden"
         }`}
       >
         <button className="filter-btn" onClick={() => setFilter("nature")}>
@@ -220,16 +221,6 @@ const Navbar = ({
             My Blogs
           </Link>
         </li>
-        <li>
-          <Link
-            to="editor"
-            className={`nav-link create-btn ${
-              path === "/editor" ? "active" : ""
-            }`}
-          >
-            Create+
-          </Link>
-        </li>
         <li
           className={`nav-link ${
             path === "/blogs" || path === "/my-blogs" ? "active" : "hidden"
@@ -243,6 +234,16 @@ const Navbar = ({
               handleSearch(e);
             }}
           />
+        </li>
+        <li>
+          <Link
+            to="editor"
+            className={`nav-link create-btn ${
+              path === "/editor" ? "active" : ""
+            }`}
+          >
+            Create<span className="create-plus">+</span>
+          </Link>
         </li>
       </ul>
       <div className="right-side">
@@ -274,52 +275,70 @@ const Navbar = ({
 const Nav = styled.nav`
   background: linear-gradient(
     to right bottom,
-    rgb(40, 49, 59, 0.9),
-    rgb(72, 84, 97, 0.7)
+    rgb(40, 49, 59, 0.3),
+    rgb(72, 84, 97, 0.3)
   );
+  
   height: 7vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   .filter-buttons {
-    display: block;
-    position: absolute;
-    left: 27%;
-
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: -1rem;
-      height: 100%;
-      width: 1px;
-      background: #929292;
+    width: 12%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    left: 10%;
+    
+    @media (max-width: 1600px) {
+      left: 7%;
     }
+    @media (max-width: 1400px) {
+      left: 5%;
+    }
+    @media (max-width: 1300px) {
+      left: 0%;
+    }
+    @media (max-width: 1200px) {
+      left: -3%;
+    }
+    @media (max-width: 1100px) {
+      display: none;
+    }
+    animation: appear 0.75s ease-in-out;
+    @keyframes appear {
+      0% {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+  
 
     .filter-btn {
       background: transparent;
+      padding: 0 0.2rem;
       border: none;
       color: #fff;
-      font-family: "Chivo Mono", monospace;
-      font-size: 1rem;
       cursor: pointer;
-      transition: all 0.25s ease-in;
+      transition: all 0.3s ease-in-out;
       &:hover {
-        color: #ff7676;
-      }
-      &:not(:last-child) {
-        margin-right: 1rem;
-      }
+        color: #0fcbf1;
 
-      &.clear-btn {
-        color: #ff7676;
       }
     }
+
+    .clear-btn {
+        color: #f93f5b;
+    }
   }
-  .hidden {
-    display: none;
-  }
+   
 
   .logo-container {
     width: 10%;
@@ -332,6 +351,9 @@ const Nav = styled.nav`
     .logo {
       width: 3.125rem;
       height: 3.125rem;
+    }
+    .blog-name {
+      font-size: small;
     }
   }
 
@@ -373,19 +395,22 @@ const Nav = styled.nav`
     text-decoration: none;
     border-radius: 0.2rem;
   }
+  
+  .hidden {
+    display: none;
+  }
 
   ul {
-    margin-left: 19rem;
     display: flex;
     list-style: none;
 
     li {
-      padding: 1rem 0.5rem;
+      padding: 0.5rem 0.5rem;
+      font-size: 1rem;
       .nav-link {
         text-decoration: none;
         color: #fff;
         font-family: "Chivo Mono", monospace;
-        font-size: medium;
       }
       .search-input {
         background: transparent;
@@ -393,8 +418,7 @@ const Nav = styled.nav`
         border-bottom: 1px solid #fff;
         color: #fff;
         font-family: "Chivo Mono", monospace;
-        font-size: medium;
-        width: 15rem;
+        width: 13rem;
         height: 1.5rem;
         transition: all 0.5s ease-in;
         // make the border come together on focus and hover
@@ -411,15 +435,24 @@ const Nav = styled.nav`
         &:hover {
           color: #23d997;
         }
+
+        .create-plus {
+          color: #23d997;
+        }
       }
       .active {
         border-bottom: 2px solid #23d997;
         padding-bottom: 0.5rem;
       }
+
     }
-    @media screen and (max-width: 768px) {
+
+    
+   // media queries for the navbar
+    @media (max-width: 768px) {
       display: none;
     }
+
   }
 `;
 

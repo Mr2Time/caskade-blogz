@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useFormik } from "formik";
 import Spinner from "../components/Spinner";
+import { motion } from "framer-motion";
+import { signupAnimation } from "../animations";
 
 import registernew from "../assets/register-new.png";
 
@@ -71,8 +73,9 @@ export default function Signup() {
   
   return (
     <>
+       <motion.div variants={signupAnimation} initial='hidden' animate='show' exit='exit'>
     {loading ? <Spinner /> : (
-    <Container>
+      <Container>
       <FormContainer>
         <div className="image-section">
           <img src={registernew} alt="register-img" />
@@ -96,7 +99,7 @@ export default function Signup() {
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.password}
-          />
+            />
           {formik.touched.password && formik.errors.password ? (<div className="form-control">{formik.errors.password}</div>) : ""}
           <input
             id="passwordconfirm"
@@ -120,6 +123,7 @@ export default function Signup() {
       </FormContainer>
     </Container>
     )}
+</motion.div>
   </>
   );
 }

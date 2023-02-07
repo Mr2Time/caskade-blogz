@@ -6,6 +6,8 @@ import userpfp from  '../assets/user-profile-picture.png';
 const Card = ({id, img, title, description, tags, author, date}) => {
     const navigate = useNavigate();
     return (
+        <>
+        
         <CardContainer onClick={() => navigate(`/blog/${id}`)}>
             <div className='card-header'>
             <img src={img} alt="card-header-image" />
@@ -25,8 +27,9 @@ const Card = ({id, img, title, description, tags, author, date}) => {
                         <p>{date}</p>
                     </div>
                 </div>
-            </div>
+            </div>        
         </CardContainer>
+        </>
     );
 }
 
@@ -34,6 +37,7 @@ const CardContainer = styled.div`
     max-width: 400px;
     height: 100%;
     cursor: pointer;
+
 
     .card-header {
         width: 100%;
@@ -72,7 +76,7 @@ const CardContainer = styled.div`
 
         }
         span {
-            border-radius: 1rem;
+            border-radius: 0.5rem;
             width: fit-content;
             align-self: flex-end;
             background-color: #0f9bba;

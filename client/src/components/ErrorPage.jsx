@@ -19,7 +19,7 @@ const NoAuth = styled.div`
   justify-content: center;
   align-items: center;
   // make height of the container 100% of the viewport
-  height: 100vh;
+  height: 93vh;
   width: 100%;
   background: linear-gradient(
     to right top,

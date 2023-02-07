@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { pageAnimation } from "./animations";
 
 import TipTap from "./components/TipTap";
 import Nav from "./components/Navbar";
@@ -41,6 +43,7 @@ function App() {
         setMFBlogs={setMFBlogs}
         setErrorFiltering={setErrorFiltering}
       />
+      <AnimatePresence mode="wait">
       <Routes location={pathname} key={key}>
         <Route path="/">
           <Route index element={<Home />} />
@@ -48,24 +51,24 @@ function App() {
             path="blogs"
             element={
               <Blogs
-                navFilterLoading={navFilterLoading}
-                FBlogs={FBlogs}
+              navFilterLoading={navFilterLoading}
+              FBlogs={FBlogs}
                 setFBlogs={setFBlogs}
                 errorFiltering={errorFiltering}
+                />
+              }
               />
-            }
-          />
           <Route
             path="my-blogs"
             element={
               <MyBlogs
-                navFilterLoading={navFilterLoading}
-                MFBlogs={MFBlogs}
-                setMFBlogs={setMFBlogs}
-                errorFiltering={errorFiltering}
+              navFilterLoading={navFilterLoading}
+              MFBlogs={MFBlogs}
+              setMFBlogs={setMFBlogs}
+              errorFiltering={errorFiltering}
               />
             }
-          />
+            />
           <Route path="editor" element={<TipTap />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
@@ -74,6 +77,7 @@ function App() {
         </Route>
         <Route path="*" element={<Home />} />
       </Routes>
+      </AnimatePresence>
     </>
   );
 }

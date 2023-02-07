@@ -99,24 +99,26 @@ const Container = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(1, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   // center the cards
   margin-top: 5rem;
   justify-items: center;
   align-items: center;
   grid-gap: 1.5rem 0;
-  @media (max-width: 1800px) {
+
+  @media (max-width: 1700px) {
     grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   }
-  @media (max-width: 1500px) {
-    grid-template-columns: repeat(3, 1fr);
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 2fr);
+  grid-template-rows: repeat(2, 1fr);
   }
   @media (max-width: 900px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (max-width: 600px) {
     grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   }
+  
 `;
 
 const Pagination = styled.div`
